@@ -17,3 +17,7 @@ In the future this may be able to read orca.out and gaussian.log files directly,
 Sample python use in examples/ folder:
 
 ## Work in progress
+For now can be installed locally by:
+``` git clone https://github.com/aligfellow/vib_analysis```
+```cd vib_analysis```
+```pip install .```
