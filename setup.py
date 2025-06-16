@@ -14,7 +14,7 @@ setup(
         ],
     },
     author='Dr Alister Goodfellow',
-    url="https://github.com/aligfellow/vib_analysis"
+    url="https://github.com/aligfellow/vib_analysis",
     description='A package for analyzing vibrational displacements in molecular dynamics trajectories.',
 
 )
