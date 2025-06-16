@@ -5,7 +5,7 @@
 ```
 [n_atoms]
 comment line
-<atom symbol/number> <x> <y> <z>
+<atomic symbol/number> <x> <y> <z>
 ... ... ... ... 
 ```
 - Currently, this has been written for orca.out
