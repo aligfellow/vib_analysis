@@ -9,7 +9,7 @@ comment line
 ... ... ... ... 
 ```
 - Currently, this has been written for orca.out
-\n _e.g._ ```orca_pltvib <orca>.out 6 ```# first vibrational mode
+  - _e.g._ ```orca_pltvib <orca>.out 6 ```# first vibrational mode
 
 In the future this may be able to read orca.out and gaussian.log files directly, rather than requiring a trj.xyz file.
 
@@ -18,6 +18,9 @@ Sample python use in examples/ folder:
 
 ## Work in progress
 For now can be installed locally by:
+
 ``` git clone https://github.com/aligfellow/vib_analysis.git```
+
 ```cd vib_analysis```
+
 ```pip install .```
