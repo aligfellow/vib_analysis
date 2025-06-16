@@ -3,9 +3,10 @@
 - Requires a ```*trj.xyz``` file
   - of the structure
 ```
-n_atoms
+[n_atoms]
 comment line
-coordinates...
+<atom symbol/number> <x> <y> <z>
+... ... ... ... 
 ```
 - Currently, this has been written for orca.out
 \n _e.g._ ```orca_pltvib <orca>.out 6 ```# first vibrational mode
