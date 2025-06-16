@@ -1,7 +1,7 @@
 # A command line and python package to read in vibrational trajectories and return the internal coordinates associated with the vibration.
 
 - Requires a ```*trj.xyz``` file
-  - of the structure
+  - of the structure:
 ```
 [n_atoms]
 comment line
