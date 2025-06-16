@@ -18,6 +18,6 @@ Sample python use in examples/ folder:
 
 ## Work in progress
 For now can be installed locally by:
-``` git clone https://github.com/aligfellow/vib_analysis```
+``` git clone https://github.com/aligfellow/vib_analysis.git```
 ```cd vib_analysis```
 ```pip install .```
