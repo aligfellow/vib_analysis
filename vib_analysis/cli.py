@@ -4,11 +4,12 @@ from .core import analyze_internal_displacements, read_xyz_trajectory, calculate
 def main():
     parser = argparse.ArgumentParser(description="Internal Coordinate Displacement Analyzer")
     parser.add_argument("xyz_file", help="Path to XYZ trajectory file.")
-    parser.add_argument("--bond_tolerance", type=float, default=1.5, help="Bond detection tolerance multiplier.")
-    parser.add_argument("--angle_tolerance", type=float, default=1.1, help="Angle detection tolerance multiplier.")
-    parser.add_argument("--dihedral_tolerance", type=float, default=1.0, help="Dihedral detection tolerance multiplier.")
-    parser.add_argument("--bond_threshold", type=float, default=0.5, help="Minimum internal coordinate change to report.")
-    parser.add_argument("--angle_threshold", type=float, default=10.0, help="Minimum angle change in degrees to report.")
+    parser.add_argument("--bond_tolerance", type=float, default=1.5, help="Bond detection tolerance multiplier. Default: 1.5")
+    parser.add_argument("--angle_tolerance", type=float, default=1.1, help="Angle detection tolerance multiplier. Default: 1.1")
+    parser.add_argument("--dihedral_tolerance", type=float, default=1.0, help="Dihedral detection tolerance multiplier. Default: 1.0")
+    parser.add_argument("--bond_threshold", type=float, default=0.5, help="Minimum internal coordinate change to report. Default: 0.5")
+    parser.add_argument("--angle_threshold", type=float, default=10.0, help="Minimum angle change in degrees to report. Default: 10")
+    parser.add_argument("--dihedral_threshold", type=float, default=20.0, help="Minimum dihedral change in degrees to report. Default: 20")
     parser.add_argument("--all", action='store_true', default=False, help="Report all changes in angles and dihedrals.")
 
     args = parser.parse_args()
@@ -20,6 +21,7 @@ def main():
         dihedral_tolerance=args.dihedral_tolerance,
         bond_threshold=args.bond_threshold,
         angle_threshold=args.angle_threshold,
+        dihedral_threshold=args.dihedral_threshold,
     )
     print(f"Analysed vibrational trajectory from {args.xyz_file}:")
 
