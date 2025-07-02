@@ -127,11 +127,29 @@ Note: These dihedrals are dependent on other changes and may not be significant 
 ```
 
 - correctly identifies the bond change between atoms 11 and 12
-   - misses the smaller magnitude bonding change of 10 and 14 (likely from the construction of internal coordinates)
+   - misses the smaller magnitude bonding change of 10 and 14 (since it is below a threshold) *see below for adjustment*
 - identifies extra dihedrals for now - atoms 13, 14, 15 featured as neighbours of the bonding change
 - also picking up motion of the thiourea protons that have strong NCIs with the substrate
 - this may have suffered from a poor internal coordinate construction?
 
+```
+> vib_analysis SR_0070_TS.v006.xyz --bond_threshold=0.2
+
+Analysed vibrational trajectory from SR_0070_TS.v006.xyz:
+
+===== Significant Bond Changes =====
+Bond (11, 12): Δ = 1.432 Å, Initial Length = 2.064 Å
+Bond (10, 11): Δ = 0.204 Å, Initial Length = 1.287 Å
+
+===== Significant Dihedral Changes =====
+Dihedral (32, 14, 15, 20): Δ = 30.937 degrees, Initial Value = 350.826 degrees
+Dihedral (31, 13, 14, 32): Δ = 29.557 degrees, Initial Value = 185.910 degrees
+Dihedral (88, 85, 87, 92): Δ = 13.860 degrees, Initial Value = 186.215 degrees
+Dihedral (92, 87, 91, 97): Δ = 13.702 degrees, Initial Value = 45.805 degrees
+Dihedral (14, 13, 31, 33): Δ = 11.470 degrees, Initial Value = 170.957 degrees
+
+Note: These dihedrals are not directly dependent on other changes however they may be artefacts of other motion in the TS.
+```
 
 
 ## Work in progress
