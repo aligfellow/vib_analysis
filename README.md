@@ -3,9 +3,9 @@
 ## Installation
 For now can be installed locally by:
 ```
-> git clone https://github.com/aligfellow/vib_analysis.git
-> cd vib_analysis
-> pip install .
+git clone https://github.com/aligfellow/vib_analysis.git
+cd vib_analysis
+pip install .
 ```
 
 ## Usage
