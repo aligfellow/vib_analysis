@@ -78,7 +78,8 @@ Dihedral (np.int64(14), 13, np.int64(31), np.int64(33)): Δ = 11.470 degrees, In
 
 Note: These dihedrals are not directly dependent on other changes however they may be artefacts of other motion in the TS.
 ```
-
+- correctly identifies the bond change between atoms 11 and 12, though perhaps misses a weakly correlated bonding change of 10 and 14
+- identifies extra dihedrals for now - atoms 13, 14, 15 featured as neighbours of the bonding change
 - this may have suffered from a poor internal coordinate construction
 
 Command line options include:
