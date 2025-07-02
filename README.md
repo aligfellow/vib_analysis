@@ -86,6 +86,7 @@ Dihedral (6, 0, 3, 7): Δ = 39.556 degrees, Initial Value = 359.998 degrees
 ```
 
 The bond changes are hierarchical, so an angle with a large change as a consequence of a bonding change is not reported as a *significant* change.
+
 Another:
 ![larger molecule sn2](images/large_sn2.gif)
 ```
@@ -100,6 +101,24 @@ Bond (0, 1): Δ = 1.333 Å, Initial Length = 2.498 Å
 ===== Significant Angle Changes =====
 Angle (11, 10, 12): Δ = 12.078 degrees, Initial Value = 129.135 degrees
 ```
+
+## More detailed information
+- the `--all` flag turns on reporting of coupled internal coordinate changes, including:
+   - Default output:
+  ```
+  ===== Significant Bond Changes =====
+  ===== Significant Angle Changes =====
+  ===== Significant Dihedral Changes =====
+  ```
+    - additional output - not necessarily insignificant changes in internal coordinates but strongly coupled
+  ```
+  ===== Minor Angle Changes =====
+  ===== Less Significant Dihedral Changes =====   
+  ```
+  - *i.e.* where a bond is changed, the angles around it will be altered across a vibrational trajectory and those angles would be significant enough to report as a change
+  - where one of these atoms is involved in a *significant* bond change, the angle is classed as minor due to the coupled nature of the internal coordinates
+     - same applies for dihedrals
+
 
 ## Further Examples
 Complex transformation with BIMP catalysed rearrangement
