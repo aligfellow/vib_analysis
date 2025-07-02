@@ -25,7 +25,7 @@ From the command line:
 
 Gives:
 ```
-#Analysed vibrational trajectory from bond_sn2.v006.xyz:
+Analysed vibrational trajectory from bond_sn2.v006.xyz:
 
 ===== Significant Bond Changes =====
 Bond (0, np.int64(4)): Δ = 1.584 Å, Initial Length = 1.717 Å
@@ -57,6 +57,29 @@ Analysed vibrational trajectory from orca_ts.v006.xyz:
 Bond (0, np.int64(1)): Δ = 1.195 Å, Initial Length = 2.807 Å
 Bond (1, np.int64(47)): Δ = 0.706 Å, Initial Length = 2.168 Å
 ```
+
+And 4 for 4:
+Complex transformation with BIMP catalysed rearrangement
+![bimp rearrangement](images/bimp.gif)
+```vib_analysis bimp.v006.xyz```
+
+```
+Analysed vibrational trajectory from SR_0070_TS.v006.xyz:
+
+===== Significant Bond Changes =====
+Bond (11, np.int64(12)): Δ = 1.432 Å, Initial Length = 2.064 Å
+
+===== Significant Dihedral Changes =====
+Dihedral (np.int64(32), 14, np.int64(15), np.int64(20)): Δ = 30.937 degrees, Initial Value = 350.826 degrees
+Dihedral (np.int64(31), 13, np.int64(14), np.int64(32)): Δ = 29.557 degrees, Initial Value = 185.910 degrees
+Dihedral (np.int64(88), 85, np.int64(87), np.int64(92)): Δ = 13.860 degrees, Initial Value = 186.215 degrees
+Dihedral (np.int64(92), 87, np.int64(91), np.int64(97)): Δ = 13.702 degrees, Initial Value = 45.805 degrees
+Dihedral (np.int64(14), 13, np.int64(31), np.int64(33)): Δ = 11.470 degrees, Initial Value = 170.957 degrees
+
+Note: These dihedrals are not directly dependent on other changes however they may be artefacts of other motion in the TS.
+```
+
+- this may have suffered from a poor internal coordinate construction
 
 Command line options include:
 
