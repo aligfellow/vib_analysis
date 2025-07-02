@@ -46,6 +46,17 @@ Dihedral (np.int64(6), 0, np.int64(3), np.int64(7)): Δ = 39.556 degrees, Initia
 ```
 
 The bond changes are hierarchical, so an angle with a large change as a consequence of a bonding change is not reported as a *significant* change.
+Another:
+![larger molecule sn2](images/large.gif)
+```vib_analysis large.v006.xyz```
+
+```
+Analysed vibrational trajectory from orca_ts.v006.xyz:
+
+===== Significant Bond Changes =====
+Bond (0, np.int64(1)): Δ = 1.195 Å, Initial Length = 2.807 Å
+Bond (1, np.int64(47)): Δ = 0.706 Å, Initial Length = 2.168 Å
+```
 
 Command line options include:
 
