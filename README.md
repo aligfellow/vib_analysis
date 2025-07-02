@@ -30,7 +30,7 @@ In the future this may be able to read orca.out and gaussian.log files directly,
 vib_analysis -h
 usage: vib_analysis [-h] [--bond_tolerance BOND_TOLERANCE] [--angle_tolerance ANGLE_TOLERANCE]
                     [--dihedral_tolerance DIHEDRAL_TOLERANCE] [--bond_threshold BOND_THRESHOLD]
-                    [--angle_threshold ANGLE_THRESHOLD] [--all]
+                    [--angle_threshold ANGLE_THRESHOLD] [--dihedral_threshold DIHEDRAL_THRESHOLD] [--all]
                     xyz_file
 
 Internal Coordinate Displacement Analyzer
@@ -41,15 +41,17 @@ positional arguments:
 options:
   -h, --help            show this help message and exit
   --bond_tolerance BOND_TOLERANCE
-                        Bond detection tolerance multiplier.
+                        Bond detection tolerance multiplier. Default: 1.5
   --angle_tolerance ANGLE_TOLERANCE
-                        Angle detection tolerance multiplier.
+                        Angle detection tolerance multiplier. Default: 1.1
   --dihedral_tolerance DIHEDRAL_TOLERANCE
-                        Dihedral detection tolerance multiplier.
+                        Dihedral detection tolerance multiplier. Default: 1.0
   --bond_threshold BOND_THRESHOLD
-                        Minimum internal coordinate change to report.
+                        Minimum internal coordinate change to report. Default: 0.5
   --angle_threshold ANGLE_THRESHOLD
-                        Minimum angle change in degrees to report.
+                        Minimum angle change in degrees to report. Default: 10
+  --dihedral_threshold DIHEDRAL_THRESHOLD
+                        Minimum dihedral change in degrees to report. Default: 20
   --all                 Report all changes in angles and dihedrals.
 ```                 
 Python interface similarly:
@@ -59,11 +61,10 @@ Sample python use in examples/ folder:
 ![sn2 imaginary mode](images/sn2.gif)
     - the gif is generated using [v.2.0](https://github.com/briling/v) ```v sn2.v006.xyz``` press `f` and then `q` ; then ```convert -delay 5 -loop 0 sn2*xpm sn2.gif```
 From the command line:
-  ``` vib_analysis sn2.v006.xyz ```
+``` 
+> vib_analysis sn2.v006.xyz
 
-Gives:
-```
-Analysed vibrational trajectory from bond_sn2.v006.xyz:
+Analysed vibrational trajectory from sn2.v006.xyz:
 
 ===== Significant Bond Changes =====
 Bond (0, 4): Δ = 1.584 Å, Initial Length = 1.717 Å
@@ -88,7 +89,7 @@ Another:
 ```
 > vib_analysis large.v006.xyz
 
-Analysed vibrational trajectory from orca_ts.v006.xyz:
+Analysed vibrational trajectory from large.v006.xyz:
 
 ===== Significant Bond Changes =====
 Bond (0, 7): Δ = 1.195 Å, Initial Length = 2.807 Å
@@ -109,9 +110,6 @@ Bond (11, 12): Δ = 1.432 Å, Initial Length = 2.064 Å
 ===== Significant Dihedral Changes =====
 Dihedral (32, 14, 15, 20): Δ = 30.937 degrees, Initial Value = 350.826 degrees
 Dihedral (31, 13, 14, 32): Δ = 29.557 degrees, Initial Value = 185.910 degrees
-Dihedral (88, 85, 87, 92): Δ = 13.860 degrees, Initial Value = 186.215 degrees
-Dihedral (92, 87, 91, 97): Δ = 13.702 degrees, Initial Value = 45.805 degrees
-Dihedral (14, 13, 31, 33): Δ = 11.470 degrees, Initial Value = 170.957 degrees
 
 Note: These dihedrals are not directly dependent on other changes however they may be artefacts of other motion in the TS.
 
@@ -145,9 +143,6 @@ Bond (10, 11): Δ = 0.204 Å, Initial Length = 1.287 Å
 ===== Significant Dihedral Changes =====
 Dihedral (32, 14, 15, 20): Δ = 30.937 degrees, Initial Value = 350.826 degrees
 Dihedral (31, 13, 14, 32): Δ = 29.557 degrees, Initial Value = 185.910 degrees
-Dihedral (88, 85, 87, 92): Δ = 13.860 degrees, Initial Value = 186.215 degrees
-Dihedral (92, 87, 91, 97): Δ = 13.702 degrees, Initial Value = 45.805 degrees
-Dihedral (14, 13, 31, 33): Δ = 11.470 degrees, Initial Value = 170.957 degrees
 
 Note: These dihedrals are not directly dependent on other changes however they may be artefacts of other motion in the TS.
 ```
