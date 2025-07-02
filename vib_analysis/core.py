@@ -99,7 +99,7 @@ def calculate_dihedral(frame, i, j, k, l):
     return frame.get_dihedral(i, j, k, l, mic=True)
 
 
-def calculate_internal_changes(frames, initial_frame, internal_coords, bond_threshold=0.5, angle_threshold=10.0, dihedral_threshold=20.0, bond_stability_threshold=0.2, angle_tolerance=1.05):
+def calculate_internal_changes(frames, ts_frame, internal_coords, bond_threshold=0.5, angle_threshold=10.0, dihedral_threshold=20.0, bond_stability_threshold=0.2, angle_tolerance=1.05):
     """Tracks changes in internal coordinates across trajectory."""
     num_frames = len(frames)
     bond_changes = {}
@@ -112,7 +112,7 @@ def calculate_internal_changes(frames, initial_frame, internal_coords, bond_thre
         max_change = max(distances) - min(distances)
         if abs(max_change) >= bond_threshold:
             # get the initial bond length
-            initial_length = calculate_bond_length(initial_frame, i, j)
+            initial_length = calculate_bond_length(ts_frame, i, j)
             bond_changes[(i, j)] = max_change, initial_length  
 
     changed_atoms = set()
@@ -129,7 +129,7 @@ def calculate_internal_changes(frames, initial_frame, internal_coords, bond_thre
             max_change = max(angles) - min(angles)           
             if abs(max_change) >= angle_threshold:
                 angle_atoms = set((i, j, k))
-                initial_angle = calculate_angle(initial_frame, i, j, k)
+                initial_angle = calculate_angle(ts_frame, i, j, k)
                 intersect_atoms = angle_atoms.intersection(changed_atoms)
                 if intersect_atoms:
                     minor_angles[(i, j, k)] = max_change, initial_angle
@@ -164,7 +164,7 @@ def calculate_internal_changes(frames, initial_frame, internal_coords, bond_thre
         dihedrals_sorted = sorted(dihedrals, key=lambda x: (x[2], x[1]), reverse=True)  # Get the one with the largest change
         dihedral, max_change, _ = dihedrals_sorted[0]
         if max_change >= dihedral_threshold:
-            initial_dihedral = calculate_dihedral(initial_frame, *dihedral)
+            initial_dihedral = calculate_dihedral(ts_frame, *dihedral)
             dihedral_atoms = set(dihedral)
             intersect_atoms = dihedral_atoms.intersection(changed_atoms)
             if intersect_atoms:
@@ -210,20 +210,22 @@ def analyze_internal_displacements(
     bond_threshold=0.5,
     angle_threshold=10.0,
     dihedral_threshold=20.0,
+    ts_frame=0,  # Default to first frame
 ):
     frames = read_xyz_trajectory(xyz_file)
     internal_coords = build_internal_coordinates(
-        frames[0],
+        frame=frames[ts_frame],
         bond_tolerance=bond_tolerance,
         angle_tolerance=angle_tolerance,
         dihedral_tolerance=dihedral_tolerance,
+
     )
     selected_indices = select_most_diverse_frames(frames)
     selected_frames = [frames[i] for i in selected_indices]
 
     bond_changes, angle_changes, minor_angles, unique_dihedrals, dependent_dihedrals = calculate_internal_changes(
         frames=selected_frames,
-        initial_frame=frames[0],
+        ts_frame=frames[ts_frame],
         internal_coords=internal_coords,
         bond_threshold=bond_threshold,
         angle_threshold=angle_threshold,
