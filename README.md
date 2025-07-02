@@ -31,6 +31,25 @@ Gives:
 Bond (0, np.int64(4)): Δ = 1.584 Å, Initial Length = 1.717 Å
 Bond (0, np.int64(5)): Δ = 1.356 Å, Initial Length = 1.952 Å
 ```
+The magnitude and change (Δ) of the modes is somewhat meaningless, though this should report the initial value of the 1st frame (or reference frame).
+
+Another example:
+![dihedral imaginary mode](images/dihedral.gif)
+```vib_analysis dihedral.v006.xyz```
+
+Results in:
+```
+Analysed vibrational trajectory from dihedral.v006.xyz:
+
+===== Significant Dihedral Changes =====
+Dihedral (np.int64(6), 0, np.int64(3), np.int64(7)): Δ = 39.556 degrees, Initial Value = 359.998 degrees
+```
+
+The bond changes are hierarchical, so an angle with a large change as a consequence of a bonding change is not reported as a *significant* change.
+
+Command line options include:
+
+Python interface similarly:
 
 ## Work in progress
 For now can be installed locally by:
