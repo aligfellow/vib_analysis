@@ -1,5 +1,12 @@
 # A command line and python package to read in vibrational trajectories and return the internal coordinates associated with the vibration.
 
+## Installation
+For now can be installed locally by:
+- ```git clone https://github.com/aligfellow/vib_analysis.git```
+- ```cd vib_analysis```
+- ```pip install .```
+
+## Usage
 - Requires a ```*trj.xyz``` file
   - of the structure:
 ```
@@ -12,15 +19,9 @@ comment line
   - _e.g._ ```orca_pltvib <orca>.out 6 ```# first vibrational mode
   - this could also come from using [pyQRC](https://github.com/patonlab/pyQRC) from R. Paton
   
-     - could run a loop of amplitudes to generate individual xyz trj files
+     - could run a loop of amplitudes to generate individual xyz trj files **to do**
      
 In the future this may be able to read orca.out and gaussian.log files directly, rather than requiring a trj.xyz file.
-
-## Installation
-For now can be installed locally by:
-- ```git clone https://github.com/aligfellow/vib_analysis.git```
-- ```cd vib_analysis```
-- ```pip install .```
 
 ## Command line interface
 ```
