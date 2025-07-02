@@ -18,28 +18,35 @@ comment line
 ... ... ... ... 
 ```
 - Currently, this has been written for orca.out
-  - _e.g._ ```orca_pltvib <orca>.out 6 ```# first vibrational mode
-  - this could also come from using [pyQRC](https://github.com/patonlab/pyQRC) from R. Paton
-     - could run a loop of amplitudes to generate individual xyz trj files **to do**
-  - **indices are zero indexed** (though the viewer used below is *one indexed*)
+  - orca and gaussian can be parsed (using cclib)
+     - gaussian currently doesn't work correctly
+  - orca is parsed with wrapper around orca_pltvib `--parse_orca --mode 6`
+     - orca includes zero modes *i.e.* 3N-5 and 3N-6, so non-linear should use `--mode 6` for the first mode
+  - **atom indices are zero indexed** (though the viewer used below is *one indexed*)
      
-In the future this may be able to read orca.out and gaussian.log files directly, rather than requiring a trj.xyz file.
+## IN PROGRESS
+ - **sort gaussian parsing using cclib**
 
 ## Command line interface
 ```
 vib_analysis -h
-usage: vib_analysis [-h] [--bond_tolerance BOND_TOLERANCE] [--angle_tolerance ANGLE_TOLERANCE]
-                    [--dihedral_tolerance DIHEDRAL_TOLERANCE] [--bond_threshold BOND_THRESHOLD]
-                    [--angle_threshold ANGLE_THRESHOLD] [--dihedral_threshold DIHEDRAL_THRESHOLD] [--all]
-                    xyz_file
+usage: vib_analysis [-h] [--parse_gaussian] [--parse_orca] [--mode MODE] [--bond_tolerance BOND_TOLERANCE]
+                    [--angle_tolerance ANGLE_TOLERANCE] [--dihedral_tolerance DIHEDRAL_TOLERANCE]
+                    [--bond_threshold BOND_THRESHOLD] [--angle_threshold ANGLE_THRESHOLD]
+                    [--dihedral_threshold DIHEDRAL_THRESHOLD] [--ts_frame] [--all]
+                    input
 
-Internal Coordinate Displacement Analyzer
+Vibrational Mode Analysis Tool
 
 positional arguments:
-  xyz_file              Path to XYZ trajectory file.
+  input                 Input file (XYZ trajectory, ORCA output, or Gaussian log)
 
 options:
   -h, --help            show this help message and exit
+  --parse_gaussian      Process Gaussian output file instead of XYZ trajectory: requires --mode !0 indexed!
+  --parse_orca          Parse ORCA output file instead of XYZ trajectory: requires --mode !orca indexed! - ie 6 for
+                        first mode (3N-6)
+  --mode MODE           Mode index to analyze (for Gaussian/ORCA conversion)
   --bond_tolerance BOND_TOLERANCE
                         Bond detection tolerance multiplier. Default: 1.5
   --angle_tolerance ANGLE_TOLERANCE
@@ -52,9 +59,11 @@ options:
                         Minimum angle change in degrees to report. Default: 10
   --dihedral_threshold DIHEDRAL_THRESHOLD
                         Minimum dihedral change in degrees to report. Default: 20
+  --ts_frame            TS frame for distances and angles in the TS. Default: 0 (first frame)
   --all                 Report all changes in angles and dihedrals.
 ```                 
 Python interface similarly:
+  - see example in examples .ipynb
 
 ## Minimal Examples 
 Sample python use in examples/ folder:
@@ -65,6 +74,8 @@ Sample python use in examples/ folder:
 From the command line:
 ``` 
 > vib_analysis sn2.v006.xyz
+ # OR
+> vib_analysis sn2.out --parse_orca --mode 6
 
 Analysed vibrational trajectory from sn2.v006.xyz:
 
@@ -78,6 +89,8 @@ Another example:
 ![dihedral imaginary mode](images/dihedral.gif)
 ```
 > vib_analysis dihedral.v006.xyz
+# OR
+> vib_analysis dihedral.out --parse_orca --mode 6
 
 Analysed vibrational trajectory from dihedral.v006.xyz:
 
@@ -118,7 +131,6 @@ Angle (11, 10, 12): Δ = 12.078 degrees, Initial Value = 129.135 degrees
   - *i.e.* where a bond is changed, the angles around it will be altered across a vibrational trajectory and those angles would be significant enough to report as a change
   - where one of these atoms is involved in a *significant* bond change, the angle is classed as minor due to the coupled nature of the internal coordinates
      - same applies for dihedrals
-
 
 ## Further Examples
 Complex transformation with BIMP catalysed rearrangement
