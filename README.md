@@ -89,13 +89,16 @@ The bond changes are hierarchical, so an angle with a large change as a conseque
 Another:
 ![larger molecule sn2](images/large_sn2.gif)
 ```
-> vib_analysis large.v006.xyz
+> vib_analysis large_sn2.v006.xyz
 
-Analysed vibrational trajectory from large.v006.xyz:
+Analysed vibrational trajectory from orca_ts.v006.xyz:
 
 ===== Significant Bond Changes =====
-Bond (0, 7): Δ = 1.195 Å, Initial Length = 2.807 Å
-Bond (1, 47): Δ = 0.706 Å, Initial Length = 2.168 Å
+Bond (1, 9): Δ = 1.512 Å, Initial Length = 1.668 Å
+Bond (0, 1): Δ = 1.333 Å, Initial Length = 2.498 Å
+
+===== Significant Angle Changes =====
+Angle (11, 10, 12): Δ = 12.078 degrees, Initial Value = 129.135 degrees
 ```
 
 ## Further Examples
