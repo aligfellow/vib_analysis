@@ -59,7 +59,7 @@ Python interface similarly:
 ## Minimal Examples 
 Sample python use in examples/ folder:
 ![sn2 imaginary mode](images/sn2.gif)
-    - the gif is generated using [v.2.0](https://github.com/briling/v) by @briling 
+    - visualisation using [v.2.0](https://github.com/briling/v) by [**@briling**](https://github.com/briling) 
     - ```v sn2.v006.xyz``` press `f` and then `q` ; then ```convert -delay 5 -loop 0 sn2*xpm sn2.gif```
 
 From the command line:
