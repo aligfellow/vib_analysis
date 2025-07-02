@@ -61,14 +61,14 @@ def build_internal_coordinates(frame, bond_tolerance=1.5, angle_tolerance=1.1, d
         indices, offsets = nl.get_neighbors(i)
         for j in indices:
             if j > i and are_bonded(frame, i, j, tolerance=1.0): 
-                bonds.append((i, j))
+                bonds.append((int(i), int(j)))
 
     # Build angle list
     for j in range(len(frame)):
         neighbors, _ = angle_nl.get_neighbors(j)
         for i, k in combinations(neighbors, 2):
             if i != k and are_bonded(frame, i, j) and are_bonded(frame, j, k):
-                angles.append((i, j, k))
+                angles.append((int(i), int(j), int(k)))
 
     # Build dihedral list
     for b, c in bonds:
@@ -81,8 +81,7 @@ def build_internal_coordinates(frame, bond_tolerance=1.5, angle_tolerance=1.1, d
             if a != c and are_bonded(frame, a, b):
                 for d in c_neighbors:
                     if d != b and d != a and are_bonded(frame, c, d):
-                        dihedral = (a, b, c, d)
-                        dihedrals.append(dihedral)
+                        dihedrals.append((int(a), int(b), int(c), int(d)))
 
     return {'bonds': bonds, 'angles': angles, 'dihedrals': dihedrals}
 
