@@ -19,9 +19,18 @@ In the future this may be able to read orca.out and gaussian.log files directly,
 ## Examples 
 Sample python use in examples/ folder:
 ![sn2 imaginary mode](images/sn2.gif)
-    - the gif is generated using [v.2.0](https://github.com/briling/v) ```v sn2_trj.xyz``` press `f` and then `q` ; then ```convert -delay 5 -loop 0 sn2*xpm sn2.gif```
+    - the gif is generated using [v.2.0](https://github.com/briling/v) ```v sn2.v006.xyz``` press `f` and then `q` ; then ```convert -delay 5 -loop 0 sn2*xpm sn2.gif```
 From the command line:
-  ``` testing ```
+  ``` vib_analysis sn2.v006.xyz ```
+
+Gives:
+```
+#Analysed vibrational trajectory from bond_sn2.v006.xyz:
+
+===== Significant Bond Changes =====
+Bond (0, np.int64(4)): Δ = 1.584 Å, Initial Length = 1.717 Å
+Bond (0, np.int64(5)): Δ = 1.356 Å, Initial Length = 1.952 Å
+```
 
 ## Work in progress
 For now can be installed locally by:
