@@ -10,7 +10,8 @@ comment line
 ```
 - Currently, this has been written for orca.out
   - _e.g._ ```orca_pltvib <orca>.out 6 ```# first vibrational mode
-  - this could also come from using [pyQRC]{https://github.com/patonlab/pyQRC} from R. Paton
+  - this could also come from using [pyQRC](https://github.com/patonlab/pyQRC) from R. Paton
+  
      - could run a loop of amplitudes to generate individual xyz trj files
      - 
 In the future this may be able to read orca.out and gaussian.log files directly, rather than requiring a trj.xyz file.
