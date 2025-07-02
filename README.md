@@ -16,7 +16,42 @@ comment line
      
 In the future this may be able to read orca.out and gaussian.log files directly, rather than requiring a trj.xyz file.
 
-## Examples 
+## Installation
+For now can be installed locally by:
+- ```git clone https://github.com/aligfellow/vib_analysis.git```
+- ```cd vib_analysis```
+- ```pip install .```
+
+## Command line interface
+```
+vib_analysis -h
+usage: vib_analysis [-h] [--bond_tolerance BOND_TOLERANCE] [--angle_tolerance ANGLE_TOLERANCE]
+                    [--dihedral_tolerance DIHEDRAL_TOLERANCE] [--bond_threshold BOND_THRESHOLD]
+                    [--angle_threshold ANGLE_THRESHOLD] [--all]
+                    xyz_file
+
+Internal Coordinate Displacement Analyzer
+
+positional arguments:
+  xyz_file              Path to XYZ trajectory file.
+
+options:
+  -h, --help            show this help message and exit
+  --bond_tolerance BOND_TOLERANCE
+                        Bond detection tolerance multiplier.
+  --angle_tolerance ANGLE_TOLERANCE
+                        Angle detection tolerance multiplier.
+  --dihedral_tolerance DIHEDRAL_TOLERANCE
+                        Dihedral detection tolerance multiplier.
+  --bond_threshold BOND_THRESHOLD
+                        Minimum internal coordinate change to report.
+  --angle_threshold ANGLE_THRESHOLD
+                        Minimum angle change in degrees to report.
+  --all                 Report all changes in angles and dihedrals.
+```                 
+Python interface similarly:
+
+## Minimal Examples 
 Sample python use in examples/ folder:
 ![sn2 imaginary mode](images/sn2.gif)
     - the gif is generated using [v.2.0](https://github.com/briling/v) ```v sn2.v006.xyz``` press `f` and then `q` ; then ```convert -delay 5 -loop 0 sn2*xpm sn2.gif```
@@ -58,7 +93,7 @@ Bond (0, np.int64(1)): Δ = 1.195 Å, Initial Length = 2.807 Å
 Bond (1, np.int64(47)): Δ = 0.706 Å, Initial Length = 2.168 Å
 ```
 
-And 4 for 4:
+## Further Examples
 Complex transformation with BIMP catalysed rearrangement
 ![bimp rearrangement](images/bimp.gif)
 ```vib_analysis bimp.v006.xyz```
@@ -113,37 +148,6 @@ Dihedral (np.int64(2), 1, np.int64(10), np.int64(11)): Δ = 35.026 degrees, Init
 Note: These dihedrals are dependent on other changes and may not be significant on their own.
 ```
 
-##Command line options include:
-```
-vib_analysis -h
-usage: vib_analysis [-h] [--bond_tolerance BOND_TOLERANCE] [--angle_tolerance ANGLE_TOLERANCE]
-                    [--dihedral_tolerance DIHEDRAL_TOLERANCE] [--bond_threshold BOND_THRESHOLD]
-                    [--angle_threshold ANGLE_THRESHOLD] [--all]
-                    xyz_file
-
-Internal Coordinate Displacement Analyzer
-
-positional arguments:
-  xyz_file              Path to XYZ trajectory file.
-
-options:
-  -h, --help            show this help message and exit
-  --bond_tolerance BOND_TOLERANCE
-                        Bond detection tolerance multiplier.
-  --angle_tolerance ANGLE_TOLERANCE
-                        Angle detection tolerance multiplier.
-  --dihedral_tolerance DIHEDRAL_TOLERANCE
-                        Dihedral detection tolerance multiplier.
-  --bond_threshold BOND_THRESHOLD
-                        Minimum internal coordinate change to report.
-  --angle_threshold ANGLE_THRESHOLD
-                        Minimum angle change in degrees to report.
-  --all                 Report all changes in angles and dihedrals.
-```                 
-Python interface similarly:
-
 ## Work in progress
-For now can be installed locally by:
-- ```git clone https://github.com/aligfellow/vib_analysis.git```
-- ```cd vib_analysis```
-- ```pip install .```
+This is a work in progress and will hopefully improve at some point in the future...
+Feel free to contribute and ask any questions
