@@ -87,7 +87,7 @@ Dihedral (6, 0, 3, 7): Δ = 39.556 degrees, Initial Value = 359.998 degrees
 
 The bond changes are hierarchical, so an angle with a large change as a consequence of a bonding change is not reported as a *significant* change.
 Another:
-![larger molecule sn2](images/large.gif)
+![larger molecule sn2](images/large_sn2.gif)
 ```
 > vib_analysis large.v006.xyz
 
