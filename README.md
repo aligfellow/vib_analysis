@@ -80,6 +80,7 @@ Note: These dihedrals are not directly dependent on other changes however they m
 ```
 - correctly identifies the bond change between atoms 11 and 12, though perhaps misses a weakly correlated bonding change of 10 and 14
 - identifies extra dihedrals for now - atoms 13, 14, 15 featured as neighbours of the bonding change
+- also picking up motion of the thiourea protons that have strong NCIs with the substrate
 - this may have suffered from a poor internal coordinate construction
 
 Command line options include:
