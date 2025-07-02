@@ -64,8 +64,8 @@ Gives:
 Analysed vibrational trajectory from bond_sn2.v006.xyz:
 
 ===== Significant Bond Changes =====
-Bond (0, np.int64(4)): Δ = 1.584 Å, Initial Length = 1.717 Å
-Bond (0, np.int64(5)): Δ = 1.356 Å, Initial Length = 1.952 Å
+Bond (0, 4): Δ = 1.584 Å, Initial Length = 1.717 Å
+Bond (0, 5): Δ = 1.356 Å, Initial Length = 1.952 Å
 ```
 The magnitude and change (Δ) of the modes is somewhat meaningless, though this should report the initial value of the 1st frame (or reference frame).
 
@@ -78,7 +78,7 @@ Results in:
 Analysed vibrational trajectory from dihedral.v006.xyz:
 
 ===== Significant Dihedral Changes =====
-Dihedral (np.int64(6), 0, np.int64(3), np.int64(7)): Δ = 39.556 degrees, Initial Value = 359.998 degrees
+Dihedral (6, 0, 3, 7): Δ = 39.556 degrees, Initial Value = 359.998 degrees
 ```
 
 The bond changes are hierarchical, so an angle with a large change as a consequence of a bonding change is not reported as a *significant* change.
@@ -90,64 +90,49 @@ Another:
 Analysed vibrational trajectory from orca_ts.v006.xyz:
 
 ===== Significant Bond Changes =====
-Bond (0, np.int64(1)): Δ = 1.195 Å, Initial Length = 2.807 Å
-Bond (1, np.int64(47)): Δ = 0.706 Å, Initial Length = 2.168 Å
+Bond (0, 7): Δ = 1.195 Å, Initial Length = 2.807 Å
+Bond (1, 47): Δ = 0.706 Å, Initial Length = 2.168 Å
 ```
 
 ## Further Examples
 Complex transformation with BIMP catalysed rearrangement
 ![bimp rearrangement](images/bimp.gif)
-```vib_analysis bimp.v006.xyz```
+```vib_analysis bimp.v006.xyz --all``` (including the flag to print all internal coordinate changes)
 
 ```
 Analysed vibrational trajectory from SR_0070_TS.v006.xyz:
 
 ===== Significant Bond Changes =====
-Bond (11, np.int64(12)): Δ = 1.432 Å, Initial Length = 2.064 Å
+Bond (11, 12): Δ = 1.432 Å, Initial Length = 2.064 Å
 
 ===== Significant Dihedral Changes =====
-Dihedral (np.int64(32), 14, np.int64(15), np.int64(20)): Δ = 30.937 degrees, Initial Value = 350.826 degrees
-Dihedral (np.int64(31), 13, np.int64(14), np.int64(32)): Δ = 29.557 degrees, Initial Value = 185.910 degrees
-Dihedral (np.int64(88), 85, np.int64(87), np.int64(92)): Δ = 13.860 degrees, Initial Value = 186.215 degrees
-Dihedral (np.int64(92), 87, np.int64(91), np.int64(97)): Δ = 13.702 degrees, Initial Value = 45.805 degrees
-Dihedral (np.int64(14), 13, np.int64(31), np.int64(33)): Δ = 11.470 degrees, Initial Value = 170.957 degrees
-
-Note: These dihedrals are not directly dependent on other changes however they may be artefacts of other motion in the TS.
-```
-- correctly identifies the bond change between atoms 11 and 12, though perhaps misses a weakly correlated bonding change of 10 and 14
-- identifies extra dihedrals for now - atoms 13, 14, 15 featured as neighbours of the bonding change
-- also picking up motion of the thiourea protons that have strong NCIs with the substrate
-- this may have suffered from a poor internal coordinate construction
-
-more detailed:
-```vib_analysis bimp.v006.xyz --all```
-
-```
-Analysed vibrational trajectory from SR_0070_TS.v006.xyz:
-
-===== Significant Bond Changes =====
-Bond (11, np.int64(12)): Δ = 1.432 Å, Initial Length = 2.064 Å
-
-===== Significant Dihedral Changes =====
-Dihedral (np.int64(32), 14, np.int64(15), np.int64(20)): Δ = 30.937 degrees, Initial Value = 350.826 degrees
-Dihedral (np.int64(31), 13, np.int64(14), np.int64(32)): Δ = 29.557 degrees, Initial Value = 185.910 degrees
-Dihedral (np.int64(88), 85, np.int64(87), np.int64(92)): Δ = 13.860 degrees, Initial Value = 186.215 degrees
-Dihedral (np.int64(92), 87, np.int64(91), np.int64(97)): Δ = 13.702 degrees, Initial Value = 45.805 degrees
-Dihedral (np.int64(14), 13, np.int64(31), np.int64(33)): Δ = 11.470 degrees, Initial Value = 170.957 degrees
+Dihedral (32, 14, 15, 20): Δ = 30.937 degrees, Initial Value = 350.826 degrees
+Dihedral (31, 13, 14, 32): Δ = 29.557 degrees, Initial Value = 185.910 degrees
+Dihedral (88, 85, 87, 92): Δ = 13.860 degrees, Initial Value = 186.215 degrees
+Dihedral (92, 87, 91, 97): Δ = 13.702 degrees, Initial Value = 45.805 degrees
+Dihedral (14, 13, 31, 33): Δ = 11.470 degrees, Initial Value = 170.957 degrees
 
 Note: These dihedrals are not directly dependent on other changes however they may be artefacts of other motion in the TS.
 
 ===== Minor Angle Changes =====
-Angle (np.int64(13), 12, np.int64(29)): Δ = 11.020 degrees, Initial Value = 122.116 degrees
+Angle (13, 12, 29): Δ = 11.020 degrees, Initial Value = 122.116 degrees
 
 Note: These angles are dependent on other changes and may not be significant on their own.
 
 ===== Less Significant Dihedral Changes =====
-Dihedral (np.int64(29), 12, np.int64(13), np.int64(31)): Δ = 48.971 degrees, Initial Value = 17.521 degrees
-Dihedral (np.int64(2), 1, np.int64(10), np.int64(11)): Δ = 35.026 degrees, Initial Value = 194.336 degrees
+Dihedral (29, 12, 13, 31): Δ = 48.971 degrees, Initial Value = 17.521 degrees
+Dihedral (2, 1, 10, 11): Δ = 35.026 degrees, Initial Value = 194.336 degrees
 
 Note: These dihedrals are dependent on other changes and may not be significant on their own.
 ```
+
+- correctly identifies the bond change between atoms 11 and 12
+   - misses the smaller magnitude bonding change of 10 and 14 (likely from the construction of internal coordinates)
+- identifies extra dihedrals for now - atoms 13, 14, 15 featured as neighbours of the bonding change
+- also picking up motion of the thiourea protons that have strong NCIs with the substrate
+- this may have suffered from a poor internal coordinate construction?
+
+
 
 ## Work in progress
 This is a work in progress and will hopefully improve at some point in the future...
