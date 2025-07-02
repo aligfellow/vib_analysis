@@ -152,5 +152,5 @@ Note: These dihedrals are not directly dependent on other changes however they m
 
 
 ## Work in progress
-This is a work in progress and will hopefully improve at some point in the future...
+This is a work in progress and I will hopefully improve it at some point in the future...
 Feel free to contribute and ask any questions
