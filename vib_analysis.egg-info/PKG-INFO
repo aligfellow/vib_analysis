@@ -1,0 +1,12 @@
+Metadata-Version: 2.4
+Name: vib_analysis
+Version: 0.1.0
+Summary: A package for analyzing vibrational displacements in molecular dynamics trajectories.
+Home-page: https://github.com/aligfellow/vib_analysis
+Author: Dr Alister Goodfellow
+Requires-Dist: numpy
+Requires-Dist: ase
+Dynamic: author
+Dynamic: home-page
+Dynamic: requires-dist
+Dynamic: summary

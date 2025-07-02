@@ -1,0 +1,2 @@
+[console_scripts]
+vib_analysis = vib_analysis.cli:main

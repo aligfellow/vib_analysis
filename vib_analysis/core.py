@@ -83,6 +83,7 @@ def build_internal_coordinates(frame, bond_tolerance=1.5, angle_tolerance=1.1, d
                     if d != b and d != a and are_bonded(frame, c, d):
                         dihedral = (int(a), int(b), int(c), int(d))
                         dihedrals.append(dihedral)
+                        dihedrals.append((int(a), int(b), int(c), int(d)))
 
     return {'bonds': bonds, 'angles': angles, 'dihedrals': dihedrals}
 
