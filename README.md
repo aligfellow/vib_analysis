@@ -71,10 +71,9 @@ The magnitude and change (Δ) of the modes is somewhat meaningless, though this 
 
 Another example:
 ![dihedral imaginary mode](images/dihedral.gif)
-```vib_analysis dihedral.v006.xyz```
-
-Results in:
 ```
+> vib_analysis dihedral.v006.xyz
+
 Analysed vibrational trajectory from dihedral.v006.xyz:
 
 ===== Significant Dihedral Changes =====
@@ -84,9 +83,9 @@ Dihedral (6, 0, 3, 7): Δ = 39.556 degrees, Initial Value = 359.998 degrees
 The bond changes are hierarchical, so an angle with a large change as a consequence of a bonding change is not reported as a *significant* change.
 Another:
 ![larger molecule sn2](images/large.gif)
-```vib_analysis large.v006.xyz```
-
 ```
+> vib_analysis large.v006.xyz
+
 Analysed vibrational trajectory from orca_ts.v006.xyz:
 
 ===== Significant Bond Changes =====
@@ -97,9 +96,9 @@ Bond (1, 47): Δ = 0.706 Å, Initial Length = 2.168 Å
 ## Further Examples
 Complex transformation with BIMP catalysed rearrangement
 ![bimp rearrangement](images/bimp.gif)
-```vib_analysis bimp.v006.xyz --all``` (including the flag to print all internal coordinate changes)
-
 ```
+> vib_analysis bimp.v006.xyz --all #(including the flag to print all internal coordinate changes)
+
 Analysed vibrational trajectory from SR_0070_TS.v006.xyz:
 
 ===== Significant Bond Changes =====
