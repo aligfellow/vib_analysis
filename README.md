@@ -126,6 +126,7 @@ Dihedral (2, 1, 10, 11): Δ = 35.026 degrees, Initial Value = 194.336 degrees
 
 Note: These dihedrals are dependent on other changes and may not be significant on their own.
 ```
+![bimp rearrangement zoom](images/bimp_zoom.gif)
 
 - correctly identifies the bond change between atoms 11 and 12
    - misses the smaller magnitude bonding change of 10 and 14 (since it is below a threshold) *see below for adjustment*
