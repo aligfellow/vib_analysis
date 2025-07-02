@@ -83,8 +83,63 @@ Note: These dihedrals are not directly dependent on other changes however they m
 - also picking up motion of the thiourea protons that have strong NCIs with the substrate
 - this may have suffered from a poor internal coordinate construction
 
-Command line options include:
+more detailed:
+```vib_analysis bimp.v006.xyz --all```
 
+```
+Analysed vibrational trajectory from SR_0070_TS.v006.xyz:
+
+===== Significant Bond Changes =====
+Bond (11, np.int64(12)): Δ = 1.432 Å, Initial Length = 2.064 Å
+
+===== Significant Dihedral Changes =====
+Dihedral (np.int64(32), 14, np.int64(15), np.int64(20)): Δ = 30.937 degrees, Initial Value = 350.826 degrees
+Dihedral (np.int64(31), 13, np.int64(14), np.int64(32)): Δ = 29.557 degrees, Initial Value = 185.910 degrees
+Dihedral (np.int64(88), 85, np.int64(87), np.int64(92)): Δ = 13.860 degrees, Initial Value = 186.215 degrees
+Dihedral (np.int64(92), 87, np.int64(91), np.int64(97)): Δ = 13.702 degrees, Initial Value = 45.805 degrees
+Dihedral (np.int64(14), 13, np.int64(31), np.int64(33)): Δ = 11.470 degrees, Initial Value = 170.957 degrees
+
+Note: These dihedrals are not directly dependent on other changes however they may be artefacts of other motion in the TS.
+
+===== Minor Angle Changes =====
+Angle (np.int64(13), 12, np.int64(29)): Δ = 11.020 degrees, Initial Value = 122.116 degrees
+
+Note: These angles are dependent on other changes and may not be significant on their own.
+
+===== Less Significant Dihedral Changes =====
+Dihedral (np.int64(29), 12, np.int64(13), np.int64(31)): Δ = 48.971 degrees, Initial Value = 17.521 degrees
+Dihedral (np.int64(2), 1, np.int64(10), np.int64(11)): Δ = 35.026 degrees, Initial Value = 194.336 degrees
+
+Note: These dihedrals are dependent on other changes and may not be significant on their own.
+```
+
+##Command line options include:
+```
+vib_analysis -h
+usage: vib_analysis [-h] [--bond_tolerance BOND_TOLERANCE] [--angle_tolerance ANGLE_TOLERANCE]
+                    [--dihedral_tolerance DIHEDRAL_TOLERANCE] [--bond_threshold BOND_THRESHOLD]
+                    [--angle_threshold ANGLE_THRESHOLD] [--all]
+                    xyz_file
+
+Internal Coordinate Displacement Analyzer
+
+positional arguments:
+  xyz_file              Path to XYZ trajectory file.
+
+options:
+  -h, --help            show this help message and exit
+  --bond_tolerance BOND_TOLERANCE
+                        Bond detection tolerance multiplier.
+  --angle_tolerance ANGLE_TOLERANCE
+                        Angle detection tolerance multiplier.
+  --dihedral_tolerance DIHEDRAL_TOLERANCE
+                        Dihedral detection tolerance multiplier.
+  --bond_threshold BOND_THRESHOLD
+                        Minimum internal coordinate change to report.
+  --angle_threshold ANGLE_THRESHOLD
+                        Minimum angle change in degrees to report.
+  --all                 Report all changes in angles and dihedrals.
+```                 
 Python interface similarly:
 
 ## Work in progress
