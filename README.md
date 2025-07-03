@@ -1,4 +1,4 @@
-# A command line and python package to read in vibrational trajectories and return the internal coordinates associated with the vibration.
+# A command line and python package to read frequency calculation outputs or vibrational trajectories and return the internal coordinates associated with the vibration. *i.e.* a fast TS mode identification
 
 ## Installation
 For now can be installed locally by:
