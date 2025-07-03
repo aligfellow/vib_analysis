@@ -95,16 +95,13 @@ def parse_gaussian_output(output_file, mode, amplitudes=None):
     data = parser.parse()
 
     freqs = data.vibfreqs
-    print(len(freqs))
     if len(freqs) == 0:
         raise ValueError("No vibrational frequencies found in file.")
 
     # Validate mode index
     num_modes = len(data.vibfreqs)
-    print(f"Number of modes found: {num_modes}")
     if mode < 0 or mode >= num_modes:
         raise ValueError(f"Mode index {mode} out of range. File has {num_modes} modes.")
-    print(f"Processing mode {mode} with frequency {data.vibfreqs[mode]} cm**-1")
     # === Prepare geometry and displacement ===
     atom_numbers = data.atomnos
     atom_symbols = [Atoms(numbers=[z]).get_chemical_symbols()[0] for z in atom_numbers]
