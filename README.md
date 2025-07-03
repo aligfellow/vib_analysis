@@ -274,4 +274,5 @@ Dihedral (29, 12, 13, 31): Δ = 48.971°, Initial = 17.521°
 
 Note: These dihedrals are dependent on other changes and may not be significant on their own.
 ```
-- this *also works* using the command `vib_analysis bimp.out --parse_cclib --mode 0 --bond_threshold 0.2 --all` (this output used `orca_6.0.1`)
+- this *also works* using the command `vib_analysis bimp.out --parse_cclib --mode 0 --bond_threshold 0.2 --all`
+  - this output used `orca_6.0.1`
