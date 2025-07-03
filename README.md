@@ -187,7 +187,7 @@ Note: These dihedrals are not directly dependent on other changes however they m
 Mn catalyst hydrogenation
 ![Mn hydrogenation](images/mn.gif)
 ```
-vib_analysis TS2s-fRSR.log --parse_gaussian --mode 0 --all
+> vib_analysis TS2s-fRSR.log --parse_gaussian --mode 0 --all
 Written trajectory to: TS2s-fRSR.v000.xyz
 
 First 5 non-zero vibrational frequencies:
@@ -221,3 +221,5 @@ Note: These dihedrals are dependent on other changes and may not be significant 
 - this correctly identifies bonding changes of this transition state
 - parsing the output prints the imaginary modes from the output file
 - gaussian parsing (with [cclib](https://github.com/cclib/cclib) takes a *zero indexed mode* `--mode 0`
+
+Orca output parsing is also possible as long as orca is installed.
