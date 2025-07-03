@@ -25,9 +25,13 @@ comment line
   - **atom indices are zero indexed** (though the viewer used below is *one indexed*)
      
 ## IN PROGRESS
+To Do:
  - ~gaussian output parsing with cclib~
- - orca output parsing with cclib rather than requiring an orca installation
- - atom symbol printing with the output?
+ - ~orca output parsing with cclib and orca_pltvib~
+ - improve/check the python interface and usage in the .ipynb examples
+
+Later:
+ - atom symbol printing in the output
 
 ## Command line interface
 ```
