@@ -18,28 +18,35 @@ comment line
 ... ... ... ... 
 ```
 - Currently, this has been written for orca.out
-  - _e.g._ ```orca_pltvib <orca>.out 6 ```# first vibrational mode
-  - this could also come from using [pyQRC](https://github.com/patonlab/pyQRC) from R. Paton
-     - could run a loop of amplitudes to generate individual xyz trj files **to do**
-  - **indices are zero indexed** (though the viewer used below is *one indexed*)
+  - orca and gaussian can be parsed (using cclib)
+     - gaussian currently doesn't work correctly
+  - orca is parsed with wrapper around orca_pltvib `--parse_orca --mode 6`
+     - orca includes zero modes *i.e.* 3N-5 and 3N-6, so non-linear should use `--mode 6` for the first mode
+  - **atom indices are zero indexed** (though the viewer used below is *one indexed*)
      
-In the future this may be able to read orca.out and gaussian.log files directly, rather than requiring a trj.xyz file.
+## IN PROGRESS
+ - **sort gaussian parsing using cclib**
 
 ## Command line interface
 ```
 vib_analysis -h
-usage: vib_analysis [-h] [--bond_tolerance BOND_TOLERANCE] [--angle_tolerance ANGLE_TOLERANCE]
-                    [--dihedral_tolerance DIHEDRAL_TOLERANCE] [--bond_threshold BOND_THRESHOLD]
-                    [--angle_threshold ANGLE_THRESHOLD] [--dihedral_threshold DIHEDRAL_THRESHOLD] [--all]
-                    xyz_file
+usage: vib_analysis [-h] [--parse_gaussian] [--parse_orca] [--mode MODE] [--bond_tolerance BOND_TOLERANCE]
+                    [--angle_tolerance ANGLE_TOLERANCE] [--dihedral_tolerance DIHEDRAL_TOLERANCE]
+                    [--bond_threshold BOND_THRESHOLD] [--angle_threshold ANGLE_THRESHOLD]
+                    [--dihedral_threshold DIHEDRAL_THRESHOLD] [--ts_frame] [--all]
+                    input
 
-Internal Coordinate Displacement Analyzer
+Vibrational Mode Analysis Tool
 
 positional arguments:
-  xyz_file              Path to XYZ trajectory file.
+  input                 Input file (XYZ trajectory, ORCA output, or Gaussian log)
 
 options:
   -h, --help            show this help message and exit
+  --parse_gaussian      Process Gaussian output file instead of XYZ trajectory: requires --mode !0 indexed!
+  --parse_orca          Parse ORCA output file instead of XYZ trajectory: requires --mode !orca indexed! - ie 6 for
+                        first mode (3N-6)
+  --mode MODE           Mode index to analyze (for Gaussian/ORCA conversion)
   --bond_tolerance BOND_TOLERANCE
                         Bond detection tolerance multiplier. Default: 1.5
   --angle_tolerance ANGLE_TOLERANCE
@@ -52,9 +59,11 @@ options:
                         Minimum angle change in degrees to report. Default: 10
   --dihedral_threshold DIHEDRAL_THRESHOLD
                         Minimum dihedral change in degrees to report. Default: 20
+  --ts_frame            TS frame for distances and angles in the TS. Default: 0 (first frame)
   --all                 Report all changes in angles and dihedrals.
 ```                 
 Python interface similarly:
+  - see example in examples .ipynb
 
 ## Minimal Examples 
 Sample python use in examples/ folder:
@@ -65,6 +74,8 @@ Sample python use in examples/ folder:
 From the command line:
 ``` 
 > vib_analysis sn2.v006.xyz
+ # OR
+> vib_analysis sn2.out --parse_orca --mode 6
 
 Analysed vibrational trajectory from sn2.v006.xyz:
 
@@ -78,6 +89,8 @@ Another example:
 ![dihedral imaginary mode](images/dihedral.gif)
 ```
 > vib_analysis dihedral.v006.xyz
+# OR
+> vib_analysis dihedral.out --parse_orca --mode 6
 
 Analysed vibrational trajectory from dihedral.v006.xyz:
 
@@ -118,7 +131,6 @@ Angle (11, 10, 12): Δ = 12.078 degrees, Initial Value = 129.135 degrees
   - *i.e.* where a bond is changed, the angles around it will be altered across a vibrational trajectory and those angles would be significant enough to report as a change
   - where one of these atoms is involved in a *significant* bond change, the angle is classed as minor due to the coupled nature of the internal coordinates
      - same applies for dihedrals
-
 
 ## Further Examples
 Complex transformation with BIMP catalysed rearrangement
@@ -172,3 +184,40 @@ Dihedral (31, 13, 14, 32): Δ = 29.557 degrees, Initial Value = 185.910 degrees
 Note: These dihedrals are not directly dependent on other changes however they may be artefacts of other motion in the TS.
 ```
 
+Mn catalyst hydrogenation
+![Mn hydrogenation](images/mn.gif)
+```
+vib_analysis TS2s-fRSR.log --parse_gaussian --mode 0 --all
+Written trajectory to: TS2s-fRSR.v000.xyz
+
+First 5 non-zero vibrational frequencies:
+  Mode 0: -748.5 cm**-1  (imaginary)
+  Mode 1: 20.3 cm**-1
+  Mode 2: 25.1 cm**-1
+  Mode 3: 32.5 cm**-1
+  Mode 4: 36.7 cm**-1
+
+Analysed vibrational trajectory (Mode 0 with frequency -748.483 cm**-1):
+
+===== Significant Bond Changes =====
+Bond (5, 65): Δ = 1.776 Å, Initial = 1.319 Å
+Bond (65, 66): Δ = 1.665 Å, Initial = 1.203 Å
+Bond (64, 66): Δ = 0.919 Å, Initial = 1.711 Å
+Bond (1, 65): Δ = 0.875 Å, Initial = 2.591 Å
+Bond (1, 64): Δ = 0.649 Å, Initial = 1.898 Å
+
+===== Minor Angle Changes =====
+Angle (5, 1, 63): Δ = 16.471°, Initial = 96.799°
+Angle (61, 1, 63): Δ = 15.528°, Initial = 81.202°
+Angle (2, 1, 63): Δ = 13.033°, Initial = 171.266°
+
+Note: These angles are dependent on other changes and may not be significant on their own.
+
+===== Less Significant Dihedral Changes =====
+Dihedral (63, 1, 2, 36): Δ = 81.780°, Initial = 283.248°
+
+Note: These dihedrals are dependent on other changes and may not be significant on their own.
+```
+- this correctly identifies bonding changes of this transition state
+- parsing the output prints the imaginary modes from the output file
+- gaussian parsing (with [cclib](https://github.com/cclib/cclib) takes a *zero indexed mode* `--mode 0`
