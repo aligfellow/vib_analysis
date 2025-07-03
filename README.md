@@ -184,3 +184,40 @@ Dihedral (31, 13, 14, 32): Δ = 29.557 degrees, Initial Value = 185.910 degrees
 Note: These dihedrals are not directly dependent on other changes however they may be artefacts of other motion in the TS.
 ```
 
+Mn catalyst hydrogenation
+![Mn hydrogenation](images/mn.gif)
+```
+vib_analysis TS2s-fRSR.log --parse_gaussian --mode 0 --all
+Written trajectory to: TS2s-fRSR.v000.xyz
+
+First 5 non-zero vibrational frequencies:
+  Mode 0: -748.5 cm**-1  (imaginary)
+  Mode 1: 20.3 cm**-1
+  Mode 2: 25.1 cm**-1
+  Mode 3: 32.5 cm**-1
+  Mode 4: 36.7 cm**-1
+
+Analysed vibrational trajectory (Mode 0 with frequency -748.483 cm**-1):
+
+===== Significant Bond Changes =====
+Bond (5, 65): Δ = 1.776 Å, Initial = 1.319 Å
+Bond (65, 66): Δ = 1.665 Å, Initial = 1.203 Å
+Bond (64, 66): Δ = 0.919 Å, Initial = 1.711 Å
+Bond (1, 65): Δ = 0.875 Å, Initial = 2.591 Å
+Bond (1, 64): Δ = 0.649 Å, Initial = 1.898 Å
+
+===== Minor Angle Changes =====
+Angle (5, 1, 63): Δ = 16.471°, Initial = 96.799°
+Angle (61, 1, 63): Δ = 15.528°, Initial = 81.202°
+Angle (2, 1, 63): Δ = 13.033°, Initial = 171.266°
+
+Note: These angles are dependent on other changes and may not be significant on their own.
+
+===== Less Significant Dihedral Changes =====
+Dihedral (63, 1, 2, 36): Δ = 81.780°, Initial = 283.248°
+
+Note: These dihedrals are dependent on other changes and may not be significant on their own.
+```
+- this correctly identifies bonding changes of this transition state
+- parsing the output prints the imaginary modes from the output file
+- gaussian parsing (with [cclib](https://github.com/cclib/cclib) takes a *zero indexed mode* `--mode 0`
