@@ -83,8 +83,8 @@ def convert_orca(orca_file, mode):
     os.remove(orca_vib)
     return xyz_vib
 
-def parse_gaussian_output(output_file, mode, amplitudes=None):
-    """Convert Gaussian output to vibration trajectory files for a single mode (silent version)"""
+def parse_cclib_output(output_file, mode, amplitudes=None):
+    """Convert Gaussian/ORCA/other output to vibration trajectory files for a single mode with cclib"""
     mode = int(mode)
     if amplitudes is None:
         amplitudes = [0.0, -0.2, -0.4, -0.6, -0.8, -1.0, -0.8, -0.6, -0.4, -0.2, 0.0, 0.2, 0.4, 0.6, 0.8, 1.0, 0.8, 0.6, 0.4, 0.2]

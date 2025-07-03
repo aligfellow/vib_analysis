@@ -1,6 +1,6 @@
 import argparse
 from .core import analyze_internal_displacements, read_xyz_trajectory, calculate_bond_length, calculate_angle, calculate_dihedral
-from .convert import parse_gaussian_output, get_orca_frequencies, convert_orca
+from .convert import parse_cclib_output, get_orca_frequencies, convert_orca
 
 def print_analysis_results(results, args):
     if results['bond_changes']:
@@ -50,7 +50,7 @@ def print_first_5_nonzero_modes(freqs, args):
 def main():
     parser = argparse.ArgumentParser(description="Vibrational Mode Analysis Tool")
     parser.add_argument("input", help="Input file (XYZ trajectory, ORCA output, or Gaussian log)")
-    parser.add_argument("--parse_gaussian", action="store_true", help="Process Gaussian output file instead of XYZ trajectory: requires --mode !0 indexed!")
+    parser.add_argument("--parse_cclib", action="store_true", help="Process Gaussian/ORCA/other output file instead of XYZ trajectory: requires --mode !0 indexed!")
     parser.add_argument("--parse_orca", action="store_true", help="Parse ORCA output file instead of XYZ trajectory: requires --mode !orca indexed! - ie 6 for first mode (3N-6)")
     parser.add_argument("--mode", type=int, help="Mode index to analyze (for Gaussian/ORCA conversion)")
     
@@ -66,14 +66,14 @@ def main():
 
     args = parser.parse_args()
 
-    if args.parse_gaussian or args.parse_orca:
+    if args.parse_cclib or args.parse_orca:
         # Conversion mode
         if args.mode is None:
             print("Error: --mode is required for Gaussian/ORCA conversion")
             return
-        
-        if args.parse_gaussian:
-            freqs, trj_file = parse_gaussian_output(args.input, args.mode)
+
+        if args.parse_cclib:
+            freqs, trj_file = parse_cclib_output(args.input, args.mode)
             print_first_5_nonzero_modes(freqs, args)
         if args.parse_orca:
             freqs = get_orca_frequencies(args.input)
