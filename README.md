@@ -31,11 +31,10 @@ comment line
 
 ## Command line interface
 ```
-vib_analysis -h
+> vib_analysis -h
 usage: vib_analysis [-h] [--parse_cclib] [--parse_orca] [--mode MODE] [--bond_tolerance BOND_TOLERANCE]
-                    [--angle_tolerance ANGLE_TOLERANCE] [--dihedral_tolerance DIHEDRAL_TOLERANCE]
-                    [--bond_threshold BOND_THRESHOLD] [--angle_threshold ANGLE_THRESHOLD]
-                    [--dihedral_threshold DIHEDRAL_THRESHOLD] [--ts_frame] [--all]
+                    [--angle_tolerance ANGLE_TOLERANCE] [--dihedral_tolerance DIHEDRAL_TOLERANCE] [--bond_threshold BOND_THRESHOLD]
+                    [--angle_threshold ANGLE_THRESHOLD] [--dihedral_threshold DIHEDRAL_THRESHOLD] [--ts_frame] [--all]
                     input
 
 Vibrational Mode Analysis Tool
@@ -45,9 +44,8 @@ positional arguments:
 
 options:
   -h, --help            show this help message and exit
-  --parse_cclib         Process Gaussian/Orca/other output file instead of XYZ trajectory: requires --mode !0 indexed!
-  --parse_orca          Parse ORCA output file instead of XYZ trajectory: requires --mode !orca indexed! - ie 6 for
-                        first mode (3N-6)
+  --parse_cclib         Process Gaussian/ORCA/other output file instead of XYZ trajectory: requires --mode !0 indexed!
+  --parse_orca          Parse ORCA output file instead of XYZ trajectory: requires --mode !orca indexed! - ie 6 for first mode (3N-6)
   --mode MODE           Mode index to analyze (for Gaussian/ORCA conversion)
   --bond_tolerance BOND_TOLERANCE
                         Bond detection tolerance multiplier. Default: 1.5
@@ -171,9 +169,9 @@ Note: These dihedrals are dependent on other changes and may not be significant 
 - this may have suffered from a poor internal coordinate construction?
 
 ```
-> vib_analysis SR_0070_TS.v006.xyz --bond_threshold=0.2
+> vib_analysis bimp.v006.xyz --bond_threshold=0.2
 
-Analysed vibrational trajectory from SR_0070_TS.v006.xyz:
+Analysed vibrational trajectory from bimp.v006.xyz:
 
 ===== Significant Bond Changes =====
 Bond (11, 12): Δ = 1.432 Å, Initial Length = 2.064 Å
@@ -276,4 +274,4 @@ Dihedral (29, 12, 13, 31): Δ = 48.971°, Initial = 17.521°
 
 Note: These dihedrals are dependent on other changes and may not be significant on their own.
 ```
-- this *also works* using the command `vib_analysis bimp.out --parse_cclib --mode 0 --bond_threshold 0.2 --all` as this output used `orca_6.0.1`
+- this *also works* using the command `vib_analysis bimp.out --parse_cclib --mode 0 --bond_threshold 0.2 --all` (this output used `orca_6.0.1`)
