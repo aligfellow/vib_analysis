@@ -9,7 +9,7 @@ pip install .
 ```
 
 ## Usage
-- Requires a ```*trj.xyz``` file
+- Requires a `*trj.xyz` file
   - of the structure:
 ```
 [n_atoms]
@@ -18,19 +18,21 @@ comment line
 ... ... ... ... 
 ```
 - Currently, this has been written for orca.out
-  - orca and gaussian can be parsed (using cclib)
-     - gaussian currently doesn't work correctly
-  - orca is parsed with wrapper around orca_pltvib `--parse_orca --mode 6`
+  - orca and gaussian can be parsed (using cclib) **0 indexed modes**
+  - orca can also be parsed separately with wrapper around orca_pltvib `--parse_orca --mode 6`
      - orca includes zero modes *i.e.* 3N-5 and 3N-6, so non-linear should use `--mode 6` for the first mode
+     - this is currently to avoid problems parsing orca_6.1.0
   - **atom indices are zero indexed** (though the viewer used below is *one indexed*)
      
 ## IN PROGRESS
- - **sort gaussian parsing using cclib**
+ - ~gaussian output parsing with cclib~
+ - orca output parsing with cclib rather than requiring an orca installation
+ - atom symbol printing with the output?
 
 ## Command line interface
 ```
 vib_analysis -h
-usage: vib_analysis [-h] [--parse_gaussian] [--parse_orca] [--mode MODE] [--bond_tolerance BOND_TOLERANCE]
+usage: vib_analysis [-h] [--parse_cclib] [--parse_orca] [--mode MODE] [--bond_tolerance BOND_TOLERANCE]
                     [--angle_tolerance ANGLE_TOLERANCE] [--dihedral_tolerance DIHEDRAL_TOLERANCE]
                     [--bond_threshold BOND_THRESHOLD] [--angle_threshold ANGLE_THRESHOLD]
                     [--dihedral_threshold DIHEDRAL_THRESHOLD] [--ts_frame] [--all]
@@ -43,7 +45,7 @@ positional arguments:
 
 options:
   -h, --help            show this help message and exit
-  --parse_gaussian      Process Gaussian output file instead of XYZ trajectory: requires --mode !0 indexed!
+  --parse_cclib         Process Gaussian/Orca/other output file instead of XYZ trajectory: requires --mode !0 indexed!
   --parse_orca          Parse ORCA output file instead of XYZ trajectory: requires --mode !orca indexed! - ie 6 for
                         first mode (3N-6)
   --mode MODE           Mode index to analyze (for Gaussian/ORCA conversion)
@@ -105,7 +107,7 @@ Another:
 ```
 > vib_analysis large_sn2.v006.xyz
 
-Analysed vibrational trajectory from orca_ts.v006.xyz:
+Analysed vibrational trajectory from large_sn2.v006.xyz:
 
 ===== Significant Bond Changes =====
 Bond (1, 9): Δ = 1.512 Å, Initial Length = 1.668 Å
@@ -138,7 +140,7 @@ Complex transformation with BIMP catalysed rearrangement
 ```
 > vib_analysis bimp.v006.xyz --all #(including the flag to print all internal coordinate changes)
 
-Analysed vibrational trajectory from SR_0070_TS.v006.xyz:
+Analysed vibrational trajectory from bimp.v006.xyz:
 
 ===== Significant Bond Changes =====
 Bond (11, 12): Δ = 1.432 Å, Initial Length = 2.064 Å
@@ -187,8 +189,8 @@ Note: These dihedrals are not directly dependent on other changes however they m
 Mn catalyst hydrogenation
 ![Mn hydrogenation](images/mn.gif)
 ```
-> vib_analysis TS2s-fRSR.log --parse_gaussian --mode 0 --all
-Written trajectory to: TS2s-fRSR.v000.xyz
+> vib_analysis mn.log --parse_cclib --mode 0 --all
+Written trajectory to: mn.v000.xyz
 
 First 5 non-zero vibrational frequencies:
   Mode 0: -748.5 cm**-1  (imaginary)
@@ -222,7 +224,8 @@ Note: These dihedrals are dependent on other changes and may not be significant 
 - parsing the output prints the imaginary modes from the output file
 - gaussian parsing (with [cclib](https://github.com/cclib/cclib) takes a *zero indexed mode* `--mode 0`
 
-Orca output parsing is also possible as long as orca is installed.
+Orca output parsing is also possible with `--parse_cclib` and separately with `--parse_orca` 
+  - it appears that cclib cannot yet deal with orca_6.1.0 
 ```
 > vib_analysis dihedral.out --parse_orca --mode 6
 
@@ -239,3 +242,38 @@ Analysed vibrational trajectory (Mode 6 with frequency -388.51 cm**-1):
 Dihedral (6, 0, 3, 7): Δ = 39.556°, Initial = 359.998°
 ```
 - as above, but takes mode 6 as the first (which is how the modes are printed in the orca.out files as the zero modes are reported for translation and rotation
+
+And again, with the bimp example:
+```
+vib_analysis bimp.out --parse_orca --mode 6 --bond_threshold 0.2 --all
+
+First 5 non-zero vibrational frequencies:
+  Mode 6: -333.9 cm**-1  (imaginary)
+  Mode 7: 8.6 cm**-1
+  Mode 8: 12.7 cm**-1
+  Mode 9: 13.3 cm**-1
+  Mode 10: 15.8 cm**-1
+
+Analysed vibrational trajectory (Mode 6 with frequency -333.88 cm**-1):
+
+===== Significant Bond Changes =====
+Bond (11, 12): Δ = 1.432 Å, Initial = 2.064 Å
+Bond (10, 11): Δ = 0.204 Å, Initial = 1.287 Å
+
+===== Significant Dihedral Changes =====
+Dihedral (32, 14, 15, 20): Δ = 30.937°, Initial = 350.826°
+Dihedral (31, 13, 14, 32): Δ = 29.557°, Initial = 185.910°
+
+Note: These dihedrals are not directly dependent on other changes however they may be artefacts of other motion in the TS.
+
+===== Minor Angle Changes =====
+Angle (13, 12, 29): Δ = 11.020°, Initial = 122.116°
+
+Note: These angles are dependent on other changes and may not be significant on their own.
+
+===== Less Significant Dihedral Changes =====
+Dihedral (29, 12, 13, 31): Δ = 48.971°, Initial = 17.521°
+
+Note: These dihedrals are dependent on other changes and may not be significant on their own.
+```
+- this *also works* using the command `vib_analysis bimp.out --parse_cclib --mode 0 --bond_threshold 0.2 --all` as this output used `orca_6.0.1`
