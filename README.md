@@ -223,3 +223,19 @@ Note: These dihedrals are dependent on other changes and may not be significant 
 - gaussian parsing (with [cclib](https://github.com/cclib/cclib) takes a *zero indexed mode* `--mode 0`
 
 Orca output parsing is also possible as long as orca is installed.
+```
+> vib_analysis dihedral.out --parse_orca --mode 6
+
+First 5 non-zero vibrational frequencies:
+  Mode 6: -388.5 cm**-1  (imaginary)
+  Mode 7: 276.9 cm**-1
+  Mode 8: 634.5 cm**-1
+  Mode 9: 738.1 cm**-1
+  Mode 10: 940.0 cm**-1
+
+Analysed vibrational trajectory (Mode 6 with frequency -388.51 cm**-1):
+
+===== Significant Dihedral Changes =====
+Dihedral (6, 0, 3, 7): Δ = 39.556°, Initial = 359.998°
+```
+- as above, but takes mode 6 as the first (which is how the modes are printed in the orca.out files as the zero modes are reported for translation and rotation
