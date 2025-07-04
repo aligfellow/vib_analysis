@@ -110,8 +110,8 @@ def run_vib_analysis(
 def main():
     parser = argparse.ArgumentParser(description="Vibrational Mode Analysis Tool")
     parser.add_argument("input", help="Input file (XYZ trajectory, ORCA output, or Gaussian log)")
-    parser.add_argument("--parse_cclib", action="store_true", help="Process Gaussian/ORCA/other output file instead of XYZ trajectory: requires --mode !0 indexed!")
-    parser.add_argument("--parse_orca", action="store_true", help="Parse ORCA output file instead of XYZ trajectory: requires --mode !orca indexed! - ie 6 for first mode (3N-6)")
+    parser.add_argument("--parse_cclib", action="store_true", help="Process Gaussian/ORCA/other output file instead of XYZ trajectory: requires --mode (zero indexed)")
+    parser.add_argument("--parse_orca", action="store_true", help="Parse ORCA output file instead of XYZ trajectory: requires --mode (zero indexed)")
     parser.add_argument("--mode", type=int, help="Mode index to analyze (for Gaussian/ORCA conversion)")
     
     # Analysis parameters
