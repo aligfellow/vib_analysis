@@ -101,15 +101,15 @@ True: Bond change (11, 12) found in results.
 Sample python use in examples/ folder:
 ![sn2 imaginary mode](images/sn2.gif)
     - visualisation using [v.2.0](https://github.com/briling/v) by [**Ksenia Briling @briling**](https://github.com/briling) 
-    - ```v sn2.v006.xyz``` press `f` and then `q` ; then ```convert -delay 5 -loop 0 sn2*xpm sn2.gif```
+    - ```v sn2.v000.xyz``` press `f` and then `q` ; then ```convert -delay 5 -loop 0 sn2*xpm sn2.gif```
 
 From the command line:
 ``` 
-> vib_analysis sn2.v006.xyz
+> vib_analysis sn2.v000.xyz
  # OR
 > vib_analysis sn2.out --parse_orca --mode 6
 
-Analysed vibrational trajectory from sn2.v006.xyz:
+Analysed vibrational trajectory from sn2.v000.xyz:
 
 ===== Significant Bond Changes =====
 Bond (0, 4): Δ = 1.584 Å, Initial Length = 1.717 Å
@@ -120,7 +120,7 @@ The magnitude and change (Δ) of the modes is somewhat meaningless, though this 
 Another example:
 ![dihedral imaginary mode](images/dihedral.gif)
 ```
-> vib_analysis dihedral.v006.xyz
+> vib_analysis dihedral.v000.xyz
 # OR
 > vib_analysis dihedral.out --parse_orca --mode 0
 
