@@ -17,17 +17,18 @@ comment line
 <atomic symbol/number> <x> <y> <z>
 ... ... ... ... 
 ```
-- Currently, this has been written for orca.out
-  - orca and gaussian can be parsed (using cclib) **0 indexed modes**
-  - orca can also be parsed separately with wrapper around orca_pltvib `--parse_orca --mode 6`
-     - orca includes zero modes *i.e.* 3N-5 and 3N-6, so non-linear should use `--mode 6` for the first mode
-     - this is currently to avoid problems parsing orca_6.1.0
-  - **atom indices are zero indexed** (though the viewer used below is *one indexed*)
+
+- orca and gaussian can be parsed (using cclib) **0 indexed modes**
+- orca can also be parsed separately with wrapper around orca_pltvib `--parse_orca --mode 6`
+  - orca includes zero modes *i.e.* 3N-5 and 3N-6, so non-linear should use `--mode 6` for the first mode
+  - this is currently to avoid problems with cclib parsing of newer orca outputs
+- **atom indices are zero indexed** (though the viewer used below is *one indexed*)
      
 ## IN PROGRESS
 To Do:
  - ~gaussian output parsing with cclib~
  - ~orca output parsing with cclib and orca_pltvib~
+ - ~sort frequency printing in parse_orca where there are multiple FREQUENCY blocks~
  - improve/check the python interface and usage in the .ipynb examples
 
 Later:
