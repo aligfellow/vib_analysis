@@ -29,10 +29,10 @@ To Do:
  - ~gaussian output parsing with cclib~
  - ~orca output parsing with cclib and orca_pltvib~
  - ~sort frequency printing in parse_orca where there are multiple FREQUENCY blocks~
- - improve/check the python interface and usage in the .ipynb examples
+ - ~improve/check the python interface and usage in the .ipynb examples~
 
-Later:
- - atom symbol printing in the output
+Future?:
+ - maybe add atom symbol printing in the output
 
 ## Command line interface
 ```
