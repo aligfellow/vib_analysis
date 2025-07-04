@@ -30,9 +30,6 @@ env/
 htmlcov/
 .coverage
 
-# Logs
-*.log
-
 # macOS files
 .DS_Store
 
