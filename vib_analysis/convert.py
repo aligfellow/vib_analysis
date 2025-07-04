@@ -44,6 +44,7 @@ def get_orca_frequencies(orca_file):
                 freqs.append(freq)
             except (ValueError, IndexError):
                 continue
+    freqs = [f for f in freqs if abs(f) > 1e-5]
     return freqs
 
 def convert_orca(orca_file, mode):
@@ -54,6 +55,7 @@ def convert_orca(orca_file, mode):
     error_indices = []
     freq_indices = []
     coord_indices = []
+    n_atoms = None
     # check for multiple FREQUENCY blocks.
     with open(orca_file, 'r') as f:
         lines = f.readlines()
@@ -64,6 +66,16 @@ def convert_orca(orca_file, mode):
             freq_indices.append(idx)
         if "CARTESIAN COORDINATES (ANGSTROEM)" in line:
             coord_indices.append(idx)
+        if "Number of atoms" in line:
+            n_atoms = int(line.split()[-1])
+
+    # orca pltvib requires a single frequency mode to be specified - linear has 5 zero modes, non-linear has 6.
+    if n_atoms is None:
+        raise ValueError("Could not determine number of atoms from ORCA output.")
+    if n_atoms < 3: 
+        orca_mode = int(mode) + 5
+    else:
+        orca_mode = int(mode) + 6
 
     if error_indices:
         print(f"WARNING: ORCA output contains an error at line {error_indices}. Please check the output file.")
@@ -77,13 +89,14 @@ def convert_orca(orca_file, mode):
         tmp_file = f'{basename}.tmp'
         with open(tmp_file, 'w') as f:
             f.writelines(lines[idx:])
-        os.system(f'{pltvib} {tmp_file} {mode} > /dev/null 2>&1')
+        os.system(f'{pltvib} {tmp_file} {orca_mode} > /dev/null 2>&1')
         os.remove(tmp_file)
-        os.system(f'mv {basename}.tmp.v{mode:03d}.xyz {basename}.out.v{mode:03d}.xyz')
+        os.system(f'mv {basename}.tmp.v{orca_mode:03d}.xyz {basename}.out.v{orca_mode:03d}.xyz')
     else:
         # Generate vibration files using orca_pltvib
-        os.system(f'{pltvib} {orca_file} {mode} > /dev/null 2>&1')
+        os.system(f'{pltvib} {orca_file} {orca_mode} > /dev/null 2>&1')
 
+    os.system(f'mv {basename}.out.v{orca_mode:03d}.xyz {basename}.out.v{mode:03d}.xyz')
     # Process each mode file
     orca_vib = f'{basename}.out.v{mode:03d}.xyz'
     xyz_vib = f'{basename}.v{mode:03d}.xyz'
@@ -110,7 +123,7 @@ def convert_orca(orca_file, mode):
                 parts = line.split()
                 f.write(f"{parts[0]} {parts[1]} {parts[2]} {parts[3]}\n")
     
-    # Remove temporary file
+    print(f"Written trajectory to: {xyz_vib}")
     os.remove(orca_vib)
     return xyz_vib
 

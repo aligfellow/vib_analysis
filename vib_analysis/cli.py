@@ -42,10 +42,7 @@ def print_first_5_nonzero_modes(freqs, args):
     for i, freq in enumerate(non_zero):
         # Add note for imaginary frequencies
         note = " (imaginary)" if freq < 0 else ""
-        if args.parse_orca:
-            print(f"  Mode {i+6}: {freq:.1f} cm**-1 {note}")
-        else:
-            print(f"  Mode {i}: {freq:.1f} cm**-1 {note}")
+        print(f"  Mode {i}: {freq:.2f} cm**-1 {note}")
 
 def run_vib_analysis(
     input_file,
