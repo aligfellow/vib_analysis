@@ -24,15 +24,15 @@ comment line
   - this separate `--orca_parse` avoids problems with cclib parsing newer orca outputs
 - **atom indices are zero indexed** (though the viewer used below is *one indexed*)
      
-## IN PROGRESS
-### To Do
+## Improvements
+### Complete
  - ~gaussian output parsing with cclib~
  - ~orca output parsing with cclib and orca_pltvib~
  - ~sort frequency printing in parse_orca where there are multiple FREQUENCY blocks~
  - ~improve/check the python interface and usage in the .ipynb examples~
 
-### Future?
- - maybe add atom symbol printing in the output
+### Future addition?
+ - add atom symbol printing in the output
 
 ## Command line interface
 ```
