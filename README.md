@@ -107,7 +107,7 @@ From the command line:
 ``` 
 > vib_analysis sn2.v000.xyz
  # OR
-> vib_analysis sn2.out --parse_orca --mode 6
+> vib_analysis sn2.out --parse_orca --mode 0
 
 Analysed vibrational trajectory from sn2.v000.xyz:
 
@@ -271,7 +271,6 @@ Analysed vibrational trajectory (Mode 0 with frequency -388.51 cm**-1):
 ===== Significant Dihedral Changes =====
 Dihedral (6, 0, 3, 7): Δ = 39.556°, Initial = 359.998°
 ```
-- as above, but takes mode 6 as the first (which is how the modes are printed in the orca.out files as the zero modes are reported for translation and rotation
 
 And again, with the bimp example:
 ```
