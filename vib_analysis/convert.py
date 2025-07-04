@@ -24,25 +24,26 @@ def get_orca_pltvib_path():
 
 def get_orca_frequencies(orca_file):
     """Extract vibrational frequencies from ORCA output"""
-    freqs = []
     with open(orca_file, 'r') as f:
         lines = f.readlines()
     
-    in_vib_section = False
-    for line in lines:
-        if "VIBRATIONAL FREQUENCIES" in line:
-            in_vib_section = True
-            continue
-        if in_vib_section and "NORMAL MODES" in line:
+    section_indices = [i for i, line in enumerate(lines) if "VIBRATIONAL FREQUENCIES" in line]
+    if not section_indices:
+        raise ValueError("No vibrational frequencies section found in ORCA output.")
+    
+    idx = section_indices[-1] # last occurence if multiple are present
+    freqs = []
+    
+    for line in lines[idx:]:
+        if "NORMAL MODES" in line:
             break
-        if in_vib_section:
-            parts = line.split(':')
-            if len(parts) > 1:
-                try:
-                    freq = float(parts[1].split()[0])
-                    freqs.append(freq)
-                except (ValueError, IndexError):
-                    continue
+        parts = line.split(':')
+        if len(parts) > 1:
+            try:
+                freq = float(parts[1].split()[0])
+                freqs.append(freq)
+            except (ValueError, IndexError):
+                continue
     return freqs
 
 def convert_orca(orca_file, mode):
