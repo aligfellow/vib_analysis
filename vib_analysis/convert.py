@@ -51,8 +51,38 @@ def convert_orca(orca_file, mode):
     pltvib = get_orca_pltvib_path()
     basename = os.path.splitext(orca_file)[0]
     
-    # Generate vibration files using orca_pltvib
-    os.system(f'{pltvib} {orca_file} {mode} > /dev/null 2>&1')
+    error_indices = []
+    freq_indices = []
+    coord_indices = []
+    # check for multiple FREQUENCY blocks.
+    with open(orca_file, 'r') as f:
+        lines = f.readlines()
+    for idx, line in enumerate(lines):
+        if "ERROR" in line:
+            error_indices.append(idx)
+        if "VIBRATIONAL FREQUENCIES" in line:
+            freq_indices.append(idx)
+        if "CARTESIAN COORDINATES (ANGSTROEM)" in line:
+            coord_indices.append(idx)
+
+    if error_indices:
+        print(f"WARNING: ORCA output contains an error at line {error_indices}. Please check the output file.")
+    if not freq_indices:
+        raise ValueError("No vibrational frequencies section found in ORCA output.")
+    if len(freq_indices) > 1:
+        print(f"INFO: Multiple 'VIBRATIONAL FREQUENCIES' sections found in {orca_file}. Using the last one.")
+        idx = max(i for i in coord_indices if i < freq_indices[-1])
+        if idx != coord_indices[-1]:
+            print(f"WARNING: There are additional coordinates after the last frequency block. Likely an error occurred.")
+        tmp_file = f'{basename}.tmp'
+        with open(tmp_file, 'w') as f:
+            f.writelines(lines[idx:])
+        os.system(f'{pltvib} {tmp_file} {mode} > /dev/null 2>&1')
+        os.remove(tmp_file)
+        os.system(f'mv {basename}.tmp.v{mode:03d}.xyz {basename}.out.v{mode:03d}.xyz')
+    else:
+        # Generate vibration files using orca_pltvib
+        os.system(f'{pltvib} {orca_file} {mode} > /dev/null 2>&1')
 
     # Process each mode file
     orca_vib = f'{basename}.out.v{mode:03d}.xyz'
