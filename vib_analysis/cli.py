@@ -47,6 +47,69 @@ def print_first_5_nonzero_modes(freqs, args):
         else:
             print(f"  Mode {i}: {freq:.1f} cm**-1 {note}")
 
+def run_vib_analysis(
+    input_file,
+    mode=None,
+    parse_cclib=False,
+    parse_orca=False,
+    bond_tolerance=1.5,
+    angle_tolerance=1.1,
+    dihedral_tolerance=1.0,
+    bond_threshold=0.5,
+    angle_threshold=10.0,
+    dihedral_threshold=20.0,
+    ts_frame=False,
+    report_all=False,
+    print_output=False,
+    ):
+    
+    if parse_cclib or parse_orca:
+        if mode is None:
+            raise ValueError("Mode index is required for Gaussian/ORCA conversion")
+
+        if parse_cclib:
+            freqs, trj_file = parse_cclib_output(input_file, mode)
+        elif parse_orca:
+            freqs = get_orca_frequencies(input_file)
+            trj_file = convert_orca(input_file, mode)
+
+        if print_output:
+            print_first_5_nonzero_modes(freqs, argparse.Namespace(parse_orca=parse_orca))
+
+        results = analyze_internal_displacements(
+            trj_file,
+            bond_tolerance=bond_tolerance,
+            angle_tolerance=angle_tolerance,
+            dihedral_tolerance=dihedral_tolerance,
+            bond_threshold=bond_threshold,
+            angle_threshold=angle_threshold,
+            dihedral_threshold=dihedral_threshold,
+            ts_frame=ts_frame,
+        )
+
+        if print_output:
+            print(f"\nAnalysed vibrational trajectory (Mode {mode} with frequency {freqs[mode]} cm**-1):")
+            print_analysis_results(results, argparse.Namespace(all=report_all))
+
+    else:
+        # XYZ direct analysis
+        results = analyze_internal_displacements(
+            input_file,
+            bond_tolerance=bond_tolerance,
+            angle_tolerance=angle_tolerance,
+            dihedral_tolerance=dihedral_tolerance,
+            bond_threshold=bond_threshold,
+            angle_threshold=angle_threshold,
+            dihedral_threshold=dihedral_threshold,
+            ts_frame=ts_frame,
+        )
+
+        if print_output:
+            print(f"\nAnalysed vibrational trajectory from {input_file}:")
+            print_analysis_results(results, argparse.Namespace(all=report_all))
+
+    return results
+
 def main():
     parser = argparse.ArgumentParser(description="Vibrational Mode Analysis Tool")
     parser.add_argument("input", help="Input file (XYZ trajectory, ORCA output, or Gaussian log)")
@@ -66,62 +129,21 @@ def main():
 
     args = parser.parse_args()
 
-    if args.parse_cclib or args.parse_orca:
-        # Conversion mode
-        if args.mode is None:
-            print("Error: --mode is required for Gaussian/ORCA conversion")
-            return
-
-        if args.parse_cclib:
-            freqs, trj_file = parse_cclib_output(args.input, args.mode)
-            print_first_5_nonzero_modes(freqs, args)
-        if args.parse_orca:
-            freqs = get_orca_frequencies(args.input)
-            print_first_5_nonzero_modes(freqs, args)
-            trj_file = convert_orca(args.input, args.mode)
-        try:
-            # Analyze the trajectory
-            results = analyze_internal_displacements(
-                trj_file,
-                bond_tolerance=args.bond_tolerance,
-                angle_tolerance=args.angle_tolerance,
-                dihedral_tolerance=args.dihedral_tolerance,
-                bond_threshold=args.bond_threshold,
-                angle_threshold=args.angle_threshold,
-                dihedral_threshold=args.dihedral_threshold,
-                ts_frame=args.ts_frame,
-            )
-
-            print(f"\nAnalysed vibrational trajectory (Mode {args.mode} with frequency {freqs[args.mode]} cm**-1):")
-            print_analysis_results(results, args)
-            
-        except Exception as e:
-            print(f"Error: {str(e)}")
-            return
-            
-    else:
-        # Direct XYZ trajectory analysis
-        if not args.input.endswith('.xyz'):
-            print("Warning: Input file doesn't have .xyz extension. Trying anyway...")
-            
-        try:
-            results = analyze_internal_displacements(
-                args.input,
-                bond_tolerance=args.bond_tolerance,
-                angle_tolerance=args.angle_tolerance,
-                dihedral_tolerance=args.dihedral_tolerance,
-                bond_threshold=args.bond_threshold,
-                angle_threshold=args.angle_threshold,
-                dihedral_threshold=args.dihedral_threshold,
-                ts_frame=args.ts_frame,
-            )
-            
-            print(f"Analysed vibrational trajectory from {args.input}:")
-            print_analysis_results(results, args)
-            
-        except Exception as e:
-            print(f"Error analyzing trajectory: {str(e)}")
-            return
+    run_vib_analysis(
+            input_file=args.input,
+            mode=args.mode,
+            parse_cclib=args.parse_cclib,
+            parse_orca=args.parse_orca,
+            bond_tolerance=args.bond_tolerance,
+            angle_tolerance=args.angle_tolerance,
+            dihedral_tolerance=args.dihedral_tolerance,
+            bond_threshold=args.bond_threshold,
+            angle_threshold=args.angle_threshold,
+            dihedral_threshold=args.dihedral_threshold,
+            ts_frame=args.ts_frame,
+            report_all=args.all,
+            print_output=True,
+        )
 
 if __name__ == "__main__":
     main()

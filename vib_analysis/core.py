@@ -88,15 +88,15 @@ def build_internal_coordinates(frame, bond_tolerance=1.5, angle_tolerance=1.1, d
     return {'bonds': bonds, 'angles': angles, 'dihedrals': dihedrals}
 
 def calculate_bond_length(frame, i, j):
-    return frame.get_distance(i, j)
+    return round(float(frame.get_distance(i, j)),3)
 
 
 def calculate_angle(frame, i, j, k):
-    return frame.get_angle(i, j, k, mic=True)
+    return round(float(frame.get_angle(i, j, k, mic=True)),3)
 
 
 def calculate_dihedral(frame, i, j, k, l):
-    return frame.get_dihedral(i, j, k, l, mic=True)
+    return round(float(frame.get_dihedral(i, j, k, l, mic=True)),3)
 
 
 def calculate_internal_changes(frames, ts_frame, internal_coords, bond_threshold=0.5, angle_threshold=10.0, dihedral_threshold=20.0, bond_stability_threshold=0.2, angle_tolerance=1.05):
@@ -109,7 +109,7 @@ def calculate_internal_changes(frames, ts_frame, internal_coords, bond_threshold
     # Track max changes
     for i, j in internal_coords['bonds']:
         distances = [calculate_bond_length(frame, i, j) for frame in frames]
-        max_change = max(distances) - min(distances)
+        max_change = round(max(distances) - min(distances),3)
         if abs(max_change) >= bond_threshold:
             # get the initial bond length
             initial_length = calculate_bond_length(ts_frame, i, j)
@@ -126,7 +126,7 @@ def calculate_internal_changes(frames, ts_frame, internal_coords, bond_threshold
             continue
         if all(bond_changes.get(tuple(sorted(bond)), 0) < bond_stability_threshold for bond in bonds_in_angle):
             angles = [calculate_angle(frame, i, j, k) for frame in frames]
-            max_change = max(angles) - min(angles)           
+            max_change = round(max(angles) - min(angles), 3)
             if abs(max_change) >= angle_threshold:
                 angle_atoms = set((i, j, k))
                 initial_angle = calculate_angle(ts_frame, i, j, k)
@@ -143,7 +143,7 @@ def calculate_internal_changes(frames, ts_frame, internal_coords, bond_threshold
         if all(bond_changes.get(tuple(sorted(bond)), 0) < bond_stability_threshold for bond in bonds_in_dihedral):
             dihedrals = [calculate_dihedral(frame, i, j, k, l) for frame in frames]
             # max_change = max(dihedrals) - min(dihedrals) # returns too large angles due to periodicity
-            max_change = max([abs((d - dihedrals[0] + 180) % 360 - 180 ) for d in dihedrals])  # Adjust for periodicity
+            max_change = round(max([abs((d - dihedrals[0] + 180) % 360 - 180 ) for d in dihedrals]),3)  # Adjust for periodicity
             if max_change >= angle_threshold:
                 dihedral_changes[(i, j, k, l)] = max_change
 
@@ -211,6 +211,7 @@ def analyze_internal_displacements(
     angle_threshold=10.0,
     dihedral_threshold=20.0,
     ts_frame=0,  # Default to first frame
+    rounding=3,  # Default rounding precision
 ):
     frames = read_xyz_trajectory(xyz_file)
     internal_coords = build_internal_coordinates(
@@ -230,6 +231,7 @@ def analyze_internal_displacements(
         bond_threshold=bond_threshold,
         angle_threshold=angle_threshold,
         dihedral_threshold=dihedral_threshold,
+        rounding=rounding,
     )
 
     return {
