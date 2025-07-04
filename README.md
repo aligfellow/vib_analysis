@@ -68,9 +68,9 @@ options:
   --all                 Report all changes in angles and dihedrals.
 ```                 
 ## Python interface
-  - see examplese/examples.ipynb
-  - Will return a dictionary of the results, and printing can be turned on to produce the same as the CLI
-  - For example:
+See examplese/examples.ipynb
+This function will return a dictionary of the results, and printing can be turned on to produce the same as the CLI
+For example:
 ```
 from vib_analysis.cli import run_vib_analysis
 
