@@ -211,7 +211,6 @@ def analyze_internal_displacements(
     angle_threshold=10.0,
     dihedral_threshold=20.0,
     ts_frame=0,  # Default to first frame
-    rounding=3,  # Default rounding precision
 ):
     frames = read_xyz_trajectory(xyz_file)
     internal_coords = build_internal_coordinates(
@@ -231,7 +230,6 @@ def analyze_internal_displacements(
         bond_threshold=bond_threshold,
         angle_threshold=angle_threshold,
         dihedral_threshold=dihedral_threshold,
-        rounding=rounding,
     )
 
     return {
