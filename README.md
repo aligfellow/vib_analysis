@@ -67,8 +67,35 @@ options:
   --ts_frame            TS frame for distances and angles in the TS. Default: 0 (first frame)
   --all                 Report all changes in angles and dihedrals.
 ```                 
-Python interface similarly:
-  - see example in examples .ipynb
+## Python interface
+See examplese/examples.ipynb
+This function will return a dictionary of the results, and printing can be turned on to produce the same as the CLI
+For example:
+```
+from vib_analysis.cli import run_vib_analysis
+
+orca_out = 'data/bimp.out'
+
+results = run_vib_analysis(
+        input_file=orca_out,
+        parse_orca=True,
+        mode=6,
+        # print_output=True,
+    )
+
+print(results)
+
+theoretical_bond_change = (11,12)
+if theoretical_bond_change in results['bond_changes']:
+    print(f'True: Bond change {theoretical_bond_change} found in results.')
+```
+Outputs:
+```
+{'bond_changes': {(11, 12): (1.432, 2.064)}, 'angle_changes': {}, 'minor_angle_changes': {(13, 12, 29): (11.02, 122.116)}, 'dihedral_changes': {(31, 13, 14, 32): (29.558, 185.91), (32, 14, 15, 20): (30.937, 350.826)}, 'minor_dihedral_changes': {(2, 1, 10, 11): (35.025, 194.336), (29, 12, 13, 31): (48.971, 17.521)}, 'frame_indices': [5, 14]}
+True: Bond change (11, 12) found in results.
+```
+  - This can be used to check for a known vibrational mode (theoretical_bond_change) in `results['bond_changes']`
+  - So in theory this could identify whether the correct TS mode has been identidied in a high throughput search if the atom indices are known (or available automatically)
 
 ## Minimal Examples 
 Sample python use in examples/ folder:
