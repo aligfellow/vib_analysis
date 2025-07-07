@@ -21,8 +21,9 @@ comment line
 - orca and gaussian can be parsed (using cclib) **0 indexed modes**
 - orca can also be parsed separately with wrapper around orca_pltvib `--parse_orca --mode X`
   - the wrapper deals with orca printing 0 modes for linear and non-linear molecules, `--mode 0` is always the first mode
-  - this separate `--orca_parse` avoids problems with cclib parsing newer orca outputs
+  - this separate `--parse_orca` avoids problems with cclib parsing newer orca outputs
 - **atom indices are zero indexed** (though the viewer used below is *one indexed*)
+- for `--parse_orca`, the path can be provided with `--orca_path`, if not provided, this will default to checking for ORCA installation with `which orca`
      
 ## Improvements
 ### Complete
@@ -37,8 +38,9 @@ comment line
 ## Command line interface
 ```
 > vib_analysis -h
-usage: vib_analysis [-h] [--parse_cclib] [--parse_orca] [--mode MODE] [--bond_tolerance BOND_TOLERANCE]
-                    [--angle_tolerance ANGLE_TOLERANCE] [--dihedral_tolerance DIHEDRAL_TOLERANCE] [--bond_threshold BOND_THRESHOLD]
+usage: vib_analysis [-h] [--parse_cclib] [--parse_orca] [--mode MODE] [--orca_path ORCA_PATH]
+                    [--bond_tolerance BOND_TOLERANCE] [--angle_tolerance ANGLE_TOLERANCE]
+                    [--dihedral_tolerance DIHEDRAL_TOLERANCE] [--bond_threshold BOND_THRESHOLD]
                     [--angle_threshold ANGLE_THRESHOLD] [--dihedral_threshold DIHEDRAL_THRESHOLD] [--ts_frame] [--all]
                     input
 
@@ -49,9 +51,11 @@ positional arguments:
 
 options:
   -h, --help            show this help message and exit
-  --parse_cclib         Process Gaussian/ORCA/other output file instead of XYZ trajectory: requires --mode (0 indexed)
-  --parse_orca          Parse ORCA output file instead of XYZ trajectory: requires --mode (0 indexed)
+  --parse_cclib         Process Gaussian/ORCA/other output file instead of XYZ trajectory: requires --mode (zero indexed)
+  --parse_orca          Parse ORCA output file instead of XYZ trajectory: requires --mode (zero indexed)
   --mode MODE           Mode index to analyze (for Gaussian/ORCA conversion)
+  --orca_path ORCA_PATH
+                        Path to ORCA binary
   --bond_tolerance BOND_TOLERANCE
                         Bond detection tolerance multiplier. Default: 1.5
   --angle_tolerance ANGLE_TOLERANCE
@@ -72,15 +76,18 @@ See examplese/examples.ipynb
 This function will return a dictionary of the results, and printing can be turned on to produce the same as the CLI
 For example:
 ```
-from vib_analysis.cli import run_vib_analysis
+from vib_analysis import run_vib_analysis
 
 orca_out = 'data/bimp.out'
+ORCA_PATH = os.system("which orca")
+ORCA_PATH = '/path/to/orca"
 
 results = run_vib_analysis(
         input_file=orca_out,
         parse_orca=True,
         mode=6,
         # print_output=True,
+        orca_path=ORCA_PATH,
     )
 
 print(results)
