@@ -1,1 +1,1 @@
-from .core import analyze_internal_displacements
+from .cli import run_vib_analysis

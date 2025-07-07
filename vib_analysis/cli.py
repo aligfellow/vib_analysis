@@ -1,6 +1,7 @@
 import argparse
+import os
 from .core import analyze_internal_displacements, read_xyz_trajectory, calculate_bond_length, calculate_angle, calculate_dihedral
-from .convert import parse_cclib_output, get_orca_frequencies, convert_orca
+from .convert import parse_cclib_output, get_orca_frequencies, convert_orca, get_orca_pltvib_path
 
 def print_analysis_results(results, args):
     if results['bond_changes']:
@@ -58,6 +59,7 @@ def run_vib_analysis(
     ts_frame=False,
     report_all=False,
     print_output=False,
+    orca_path=None,
     ):
     
     if parse_cclib or parse_orca:
@@ -67,8 +69,12 @@ def run_vib_analysis(
         if parse_cclib:
             freqs, trj_file = parse_cclib_output(input_file, mode)
         elif parse_orca:
+            if orca_path is None:
+                pltvib_path = get_orca_pltvib_path()
+            else:
+                pltvib_path = os.path.join(os.path.dirname(orca_path), 'orca_pltvib')
             freqs = get_orca_frequencies(input_file)
-            trj_file = convert_orca(input_file, mode)
+            trj_file = convert_orca(input_file, mode, pltvib_path=pltvib_path)
 
         if print_output:
             print_first_5_nonzero_modes(freqs, argparse.Namespace(parse_orca=parse_orca))
@@ -113,7 +119,8 @@ def main():
     parser.add_argument("--parse_cclib", action="store_true", help="Process Gaussian/ORCA/other output file instead of XYZ trajectory: requires --mode (zero indexed)")
     parser.add_argument("--parse_orca", action="store_true", help="Parse ORCA output file instead of XYZ trajectory: requires --mode (zero indexed)")
     parser.add_argument("--mode", type=int, help="Mode index to analyze (for Gaussian/ORCA conversion)")
-    
+    parser.add_argument("--orca_path", type=str, help="Path to ORCA binary")
+
     # Analysis parameters
     parser.add_argument("--bond_tolerance", type=float, default=1.5, help="Bond detection tolerance multiplier. Default: 1.5")
     parser.add_argument("--angle_tolerance", type=float, default=1.1, help="Angle detection tolerance multiplier. Default: 1.1")
@@ -140,6 +147,7 @@ def main():
             ts_frame=args.ts_frame,
             report_all=args.all,
             print_output=True,
+            orca_path=args.orca_path if args.parse_orca else None,
         )
 
 if __name__ == "__main__":

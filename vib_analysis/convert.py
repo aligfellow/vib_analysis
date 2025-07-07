@@ -2,6 +2,7 @@
 # convert.py
 import os
 import sys
+import subprocess
 import argparse
 import numpy as np
 from ase import Atoms
@@ -47,9 +48,12 @@ def get_orca_frequencies(orca_file):
     freqs = [f for f in freqs if abs(f) > 1e-5]
     return freqs
 
-def convert_orca(orca_file, mode):
+def convert_orca(orca_file, mode, pltvib_path=None):
     """Convert ORCA output to vibration trajectory files"""
-    pltvib = get_orca_pltvib_path()
+    if pltvib_path is None:
+        raise ValueError("Path to orca_pltvib executable is required.")
+    if not os.path.exists(orca_file):
+        raise FileNotFoundError(f"ORCA output file {orca_file} does not exist.")
     basename = os.path.splitext(orca_file)[0]
     
     error_indices = []
@@ -89,12 +93,12 @@ def convert_orca(orca_file, mode):
         tmp_file = f'{basename}.tmp'
         with open(tmp_file, 'w') as f:
             f.writelines(lines[idx:])
-        os.system(f'{pltvib} {tmp_file} {orca_mode} > /dev/null 2>&1')
+        subprocess.run([pltvib_path, tmp_file, str(orca_mode)], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)       
         os.remove(tmp_file)
         os.system(f'mv {basename}.tmp.v{orca_mode:03d}.xyz {basename}.out.v{orca_mode:03d}.xyz')
     else:
         # Generate vibration files using orca_pltvib
-        os.system(f'{pltvib} {orca_file} {orca_mode} > /dev/null 2>&1')
+        subprocess.run([pltvib_path, orca_file, str(orca_mode)], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 
     os.system(f'mv {basename}.out.v{orca_mode:03d}.xyz {basename}.out.v{mode:03d}.xyz')
     # Process each mode file
