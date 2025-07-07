@@ -80,7 +80,7 @@ from vib_analysis import run_vib_analysis
 
 orca_out = 'data/bimp.out'
 ORCA_PATH = os.system("which orca")
-ORCA_PATH = '/path/to/orca"
+# ORCA_PATH = '/path/to/orca"
 
 results = run_vib_analysis(
         input_file=orca_out,
