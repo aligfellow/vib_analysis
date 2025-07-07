@@ -9,7 +9,7 @@ import os
 def read_xyz_trajectory(file_path):
     """Reads an XYZ trajectory file and returns a list of ASE Atoms objects."""
     if not os.path.exists(file_path):
-        exit(f"Exiting: File {file_path} does not exist.") 
+        raise FileNotFoundError(f"Exiting: File {file_path} does not exist.") 
     
     frames = []
     with open(file_path, 'r') as f:
@@ -28,7 +28,7 @@ def read_xyz_trajectory(file_path):
             frame = Atoms(symbols=symbols, positions=coords)
             frames.append(frame)
     if len(frames) == 1:
-        exit(f"Exiting: Only one geometry found, make sure that this is a trj file with at least 2 frames.")
+        raise ValueError(f"Exiting: Only one geometry found, make sure that this is a trj file with at least 2 frames.")
     return frames
 
 def are_bonded(frame, i, j, tolerance=0.4):
