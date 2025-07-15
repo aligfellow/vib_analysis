@@ -1,3 +1,30 @@
 [build-system]
 requires = ["setuptools>=42", "wheel"]
 build-backend = "setuptools.build_meta"
+
+[project]
+name = "vib_analysis"
+version = "1.0.0"
+description = "A package for analyzing internal coordinate changes from vibrational mode trajectories."
+authors = [{name = "Dr Alister Goodfellow"}]
+readme = "README.md"  
+requires-python = ">=3.6" 
+dependencies = [
+    "numpy",
+    "ase",
+    "cclib"
+]
+classifiers = [  # Add relevant classifiers
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+
+[project.urls]
+homepage = "https://github.com/aligfellow/vib_analysis"
+
+[project.scripts]
+vib_analysis = "vib_analysis.cli:main"
+
+[tool.setuptools]
+packages = ["vib_analysis"]  # Explicit package name
