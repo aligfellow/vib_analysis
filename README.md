@@ -1,16 +1,17 @@
 # A command line and python package to read frequency calculation outputs or vibrational trajectories and return the internal coordinates associated with the vibration. *i.e.* a fast TS mode identification
 
 ## Installation
-For now can be installed locally by:
+This can be installed via `pypi` with: 
+``` 
+pip install vib_analysis
+```
+Or locally by:
 ```
 git clone https://github.com/aligfellow/vib_analysis.git
 cd vib_analysis
 pip install .
 ```
-Or this can be installed via `pypi` with: 
-``` 
-pip install vib_analysis
-```
+
 
 ## Usage
 - Requires a `*trj.xyz` file
