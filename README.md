@@ -7,6 +7,7 @@ git clone https://github.com/aligfellow/vib_analysis.git
 cd vib_analysis
 pip install .
 ```
+Or this can be installed via `pypi` with `pip install vib_analysis`
 
 ## Usage
 - Requires a `*trj.xyz` file
