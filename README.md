@@ -27,9 +27,10 @@ comment line
 - orca can also be parsed separately with wrapper around orca_pltvib `--parse_orca --mode X`
   - the wrapper deals with orca printing 0 modes for linear and non-linear molecules, `--mode 0` is always the first mode
   - this separate `--parse_orca` avoids problems with cclib parsing newer orca outputs
+- for `--parse_orca`, the path can be provided with `--orca_path`, if not provided, this will default to checking for ORCA installation with `os.system("which orca")`
+
 >[!IMPORTANT]
 >- **atom indices are zero indexed** (though the viewer used below is *one indexed*)
-- for `--parse_orca`, the path can be provided with `--orca_path`, if not provided, this will default to checking for ORCA installation with `os.system("which orca")`
      
 ## Improvements
 ### Complete
