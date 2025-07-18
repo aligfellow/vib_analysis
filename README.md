@@ -14,8 +14,8 @@ pip install .
 
 
 ## Usage
-- Requires a `*trj.xyz` file
-  - of the structure:
+>[!Note]
+> Requires a `*trj.xyz` file of the structure
 ```
 [n_atoms]
 comment line
