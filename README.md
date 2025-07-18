@@ -15,7 +15,7 @@ pip install .
 
 ## Usage
 >[!Note]
-> Requires a `*trj.xyz` file of the structure
+> Requires a `*trj.xyz` file of the structure, or output files from various QM softwares (see below)
 ```
 [n_atoms]
 comment line
