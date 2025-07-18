@@ -27,7 +27,8 @@ comment line
 - orca can also be parsed separately with wrapper around orca_pltvib `--parse_orca --mode X`
   - the wrapper deals with orca printing 0 modes for linear and non-linear molecules, `--mode 0` is always the first mode
   - this separate `--parse_orca` avoids problems with cclib parsing newer orca outputs
-- **atom indices are zero indexed** (though the viewer used below is *one indexed*)
+>[!IMPORTANT]
+>- **atom indices are zero indexed** (though the viewer used below is *one indexed*)
 - for `--parse_orca`, the path can be provided with `--orca_path`, if not provided, this will default to checking for ORCA installation with `os.system("which orca")`
      
 ## Improvements
@@ -38,7 +39,9 @@ comment line
  - ~improve/check the python interface and usage in the .ipynb examples~
 
 ### Future addition?
- - add atom symbol printing in the output
+>[!TIP]
+>- add atom symbol printing in the output
+>- suggestions?
 
 ## Command line interface
 ```
@@ -142,7 +145,8 @@ Analysed vibrational trajectory from dihedral.v000.xyz:
 Dihedral (6, 0, 3, 7): Δ = 39.556 degrees, Initial Value = 359.998 degrees
 ```
 
-The bond changes are hierarchical, so an angle with a large change as a consequence of a bonding change is not reported as a *significant* change.
+>[!NOTE]
+>The bond changes are hierarchical, so an angle with a large change as a consequence of a bonding change is not reported as a *significant* change.
 
 Another:
 ![larger molecule sn2](images/large_sn2.gif)
@@ -210,7 +214,6 @@ Note: These dihedrals are dependent on other changes and may not be significant 
    - misses the smaller magnitude bonding change of 10 and 14 (since it is below a threshold) *see below for adjustment*
 - identifies extra dihedrals for now - atoms 13, 14, 15 featured as neighbours of the bonding change
 - also picking up motion of the thiourea protons that have strong NCIs with the substrate
-- this may have suffered from a poor internal coordinate construction?
 
 ```
 > vib_analysis bimp.v000.xyz --bond_threshold=0.2
