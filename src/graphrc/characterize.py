@@ -444,7 +444,7 @@ def characterize_vib_mode(
     has_angles = len(angle_changes) > 0
     has_dihedrals = len(dihedral_changes) > 0
 
-    result = {
+    result: Dict[str, Any] = {
         "has_bond_changes": has_bonds,
         "has_angle_changes": has_angles,
         "has_dihedral_changes": has_dihedrals,

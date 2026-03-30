@@ -145,7 +145,9 @@ def main():
         "-ds",
         type=int,
         default=config.DEFAULT_DISPLACEMENT_LEVEL,
-        help=f"Displacement level (1-{config.MAX_DISPLACEMENT_LEVEL}, ~0.2-0.8 amplitude) "
+        help=f"Displacement scale for saved displaced structures "
+        f"(1-{config.MAX_DISPLACEMENT_LEVEL} uses trajectory frames directly, ~0.2-0.8 amplitude; "
+        f">{config.MAX_DISPLACEMENT_LEVEL} extrapolates beyond the trajectory) "
         f"(default: {config.DEFAULT_DISPLACEMENT_LEVEL})",
     )
     output_group.add_argument(

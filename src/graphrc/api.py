@@ -96,22 +96,23 @@ def load_trajectory(
             print(f"Reading trajectory from {basename}")
         frames = read_xyz_trajectory(input_file)
         trajectory_file = input_file
-        return {"frames": frames, "frequencies": None, "trajectory_file": trajectory_file}
+        return {"frames": frames, "frequencies": None, "trajectory_file": trajectory_file, "mode_displacement": None}
 
     # QM output file - ORCA files use the direct parser; everything else uses cclib
+    mode_displacement = None
     if is_orca_output(input_file):
         try:
             if print_output:
                 print(f"\nParsing {basename} with direct ORCA output parser...")
-            frequencies, trajectory_string = parse_orca_output(input_file, mode)
+            frequencies, trajectory_string, mode_displacement = parse_orca_output(input_file, mode)
         except Exception as e:
             if print_output:
                 print(f"Direct ORCA parsing failed ({e}), falling back to cclib...")
-            frequencies, trajectory_string = parse_cclib_output(input_file, mode)
+            frequencies, trajectory_string, mode_displacement = parse_cclib_output(input_file, mode)
     else:
         if print_output:
             print(f"\nParsing {basename} with cclib...")
-        frequencies, trajectory_string = parse_cclib_output(input_file, mode)
+        frequencies, trajectory_string, mode_displacement = parse_cclib_output(input_file, mode)
 
     # Convert string to frames
     frames = parse_xyz_string_to_frames(trajectory_string)
@@ -123,7 +124,12 @@ def load_trajectory(
         if print_output:
             print(f"Saved trajectory to {os.path.basename(trajectory_file)}")
 
-    return {"frames": frames, "frequencies": frequencies, "trajectory_file": trajectory_file}
+    return {
+        "frames": frames,
+        "frequencies": frequencies,
+        "trajectory_file": trajectory_file,
+        "mode_displacement": mode_displacement,
+    }
 
 
 def run_vib_analysis(
@@ -242,6 +248,7 @@ def run_vib_analysis(
     )
 
     frames = trajectory_data["frames"]
+    mode_displacement = trajectory_data.get("mode_displacement")
 
     # Now print loading info after metadata will be displayed
     if print_output:
@@ -381,6 +388,7 @@ def run_vib_analysis(
             output_prefix=output_prefix,
             scale=displacement_scale,
             max_level=config.MAX_DISPLACEMENT_LEVEL,
+            mode_displacement=mode_displacement,
             print_output=print_output,
         )
 

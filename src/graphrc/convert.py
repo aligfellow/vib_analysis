@@ -87,7 +87,7 @@ def parse_cclib_output(output_file, mode):
         for sym, coord in zip(atom_symbols, displaced):
             trj_data += f"{sym} {coord[0]:.6f} {coord[1]:.6f} {coord[2]:.6f}\n"
 
-    return freqs, trj_data
+    return freqs, trj_data, displacement
 
 
 def parse_orca_output(orca_file: str, mode: int):
@@ -242,7 +242,7 @@ def parse_orca_output(orca_file: str, mode: int):
         for sym, coord in zip(atom_symbols, displaced):
             trj_data += f"{sym} {coord[0]:.6f} {coord[1]:.6f} {coord[2]:.6f}\n"
 
-    return freqs, trj_data
+    return freqs, trj_data, displacement
 
 
 def parse_xyz_string_to_frames(trj_data_str: str) -> List[Dict[str, Any]]:
