@@ -222,36 +222,38 @@ def save_displacement_pair(
     output_prefix: str,
     scale: int = 1,
     max_level: int = 4,
+    mode_displacement: Optional[np.ndarray] = None,
     print_output: bool = False,
 ) -> Optional[Tuple[str, str]]:
     """
     Save symmetric displaced structures (TS ± scale) as XYZ files.
 
     Uses Python-style negative index wrapping (e.g., frame -1 is the last frame).
+    For scale <= max_level, coordinates are taken directly from trajectory frames.
+    For scale > max_level, mode_displacement (the Hessian normal mode vector) is used
+    to extrapolate: ts_coords ± scale * 0.2 * mode_displacement.
 
     Args:
         frames: List of frame dicts with 'symbols' and 'positions' keys
         ts_frame: Index of TS frame
         output_prefix: Prefix for output files
-        scale: Displacement scale (1-4, corresponding to amplitudes ~0.2-0.8)
-        max_level: Maximum allowed scale
+        scale: Displacement scale (1-max_level uses trajectory frames; >max_level extrapolates)
+        max_level: Trajectory frame limit (beyond this, extrapolation is used)
+        mode_displacement: Normal mode displacement vector from the Hessian (shape: n_atoms x 3).
+            Required for scale > max_level; ignored otherwise.
         print_output: Print status messages
 
     Returns
     -------
         (forward_path, reverse_path) if successful, else None
     """
-    n_frames = len(frames)
-
-    if not (1 <= scale <= max_level):
-        logger.warning(f"Invalid scale {scale} (must be 1-{max_level})")
+    if scale < 1:
+        logger.warning(f"Invalid scale {scale} (must be >= 1)")
         if print_output:
-            print(f"Invalid scale {scale} (must be 1-{max_level}).")
+            print(f"Invalid scale {scale} (must be >= 1).")
         return None
 
-    # Calculate indices with wrapping support
-    minus_idx = ts_frame - scale
-    plus_idx = ts_frame + scale
+    n_frames = len(frames)
 
     # Normalize indices (allow Python-style negative indexing)
     def normalize_index(idx: int) -> Optional[int]:
@@ -260,21 +262,48 @@ def save_displacement_pair(
             return idx % n_frames
         return None
 
-    norm_minus = normalize_index(minus_idx)
-    norm_plus = normalize_index(plus_idx)
+    if scale <= max_level:
+        # Use trajectory frames directly
+        norm_minus = normalize_index(ts_frame - scale)
+        norm_plus = normalize_index(ts_frame + scale)
 
-    if norm_minus is None or norm_plus is None:
-        logger.warning(f"Scale {scale} out of range for TS {ts_frame} (total {n_frames} frames)")
-        if print_output:
-            print(f"Scale {scale} out of range for TS {ts_frame} (total {n_frames} frames).")
+        if norm_minus is None or norm_plus is None:
+            logger.warning(f"Scale {scale} out of range for TS {ts_frame} (total {n_frames} frames)")
+            if print_output:
+                print(f"Scale {scale} out of range for TS {ts_frame} (total {n_frames} frames).")
+            return None
+
+        paths = write_displaced_structures(frames, prefix=output_prefix, indices=[norm_minus, norm_plus])
+        if len(paths) == 2:
+            logger.info(f"Saved displaced pair (±{scale}): {os.path.basename(paths[0])}, {os.path.basename(paths[1])}")
+            if print_output:
+                print(f"Saved displaced pair (±{scale}): {os.path.basename(paths[0])}, {os.path.basename(paths[1])}")
+            return (paths[0], paths[1])
         return None
+    else:
+        # Extrapolate beyond trajectory using the Hessian normal mode vector
+        if mode_displacement is None:
+            logger.warning(f"Scale {scale} exceeds trajectory range and no mode displacement vector available")
+            if print_output:
+                print(f"Scale {scale} exceeds trajectory range and no mode displacement vector available.")
+            return None
 
-    paths = write_displaced_structures(frames, prefix=output_prefix, indices=[norm_minus, norm_plus])
+        ts_coords = frames[ts_frame]["positions"]
+        symbols = frames[ts_frame]["symbols"]
+        amp = scale * 0.2
+        f_coords = ts_coords + amp * mode_displacement
+        r_coords = ts_coords - amp * mode_displacement
 
-    if len(paths) == 2:
-        logger.info(f"Saved displaced pair (±{scale}): {os.path.basename(paths[0])}, {os.path.basename(paths[1])}")
+        f_path = f"{output_prefix}_F.xyz"
+        r_path = f"{output_prefix}_R.xyz"
+        write_xyz(f_path, symbols, f_coords)
+        write_xyz(r_path, symbols, r_coords)
+
+        logger.info(
+            f"Saved displaced pair (±{scale}, extrapolated): {os.path.basename(f_path)}, {os.path.basename(r_path)}"
+        )
         if print_output:
-            print(f"Saved displaced pair (±{scale}): {os.path.basename(paths[0])}, {os.path.basename(paths[1])}")
-        return (paths[0], paths[1])
-
-    return None
+            print(
+                f"Saved displaced pair (±{scale}, extrapolated): {os.path.basename(f_path)}, {os.path.basename(r_path)}"
+            )
+        return (f_path, r_path)

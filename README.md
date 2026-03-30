@@ -93,6 +93,9 @@ graphrc calculation.out --graph
 
 # Save structures for IRC calculations
 graphrc calculation.out --save-displacement
+
+# Save with larger displacement (values >4 extrapolate beyond the trajectory using the normal mode vector)
+graphrc calculation.out --save-displacement -ds 8
 ```
 
 ---
@@ -503,7 +506,8 @@ output options:
   --save-displacement, -sd
                         Save displaced structure pair
   --displacement-scale DISPLACEMENT_SCALE, -ds DISPLACEMENT_SCALE
-                        Displacement level (1-4, ~0.2-0.8 amplitude) (default: 1)
+                        Displacement scale for saved displaced structures (1-4 uses trajectory frames directly, ~0.2-0.8
+                        amplitude; >4 extrapolates beyond the trajectory using the normal mode vector) (default: 1)
   --no-save             Do not save trajectory to disk (keep in memory only)
 ```
 
