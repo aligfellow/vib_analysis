@@ -63,6 +63,7 @@ def collect_metadata(input_file: str, **params) -> Dict[str, Any]:
 def load_trajectory(
     input_file: str,
     mode: int = 0,
+    n_frames: int = config.DEFAULT_N_FRAMES,
     save_to_disk: bool = True,
     print_output: bool = False,
 ) -> Dict[str, Any]:
@@ -72,6 +73,7 @@ def load_trajectory(
     Args:
         input_file: Path to XYZ trajectory or QM output file
         mode: Vibrational mode index (ignored for XYZ files)
+        n_frames: Number of frames in the generated trajectory (QM output only; default 20)
         save_to_disk: Whether to save converted trajectory to disk
         print_output: Print status messages
 
@@ -104,15 +106,15 @@ def load_trajectory(
         try:
             if print_output:
                 print(f"\nParsing {basename} with direct ORCA output parser...")
-            frequencies, trajectory_string, mode_displacement = parse_orca_output(input_file, mode)
+            frequencies, trajectory_string, mode_displacement = parse_orca_output(input_file, mode, n_frames)
         except Exception as e:
             if print_output:
                 print(f"Direct ORCA parsing failed ({e}), falling back to cclib...")
-            frequencies, trajectory_string, mode_displacement = parse_cclib_output(input_file, mode)
+            frequencies, trajectory_string, mode_displacement = parse_cclib_output(input_file, mode, n_frames)
     else:
         if print_output:
             print(f"\nParsing {basename} with cclib...")
-        frequencies, trajectory_string, mode_displacement = parse_cclib_output(input_file, mode)
+        frequencies, trajectory_string, mode_displacement = parse_cclib_output(input_file, mode, n_frames)
 
     # Convert string to frames
     frames = parse_xyz_string_to_frames(trajectory_string)
@@ -156,6 +158,8 @@ def run_vib_analysis(
     ascii_scale: float = config.ASCII_SCALE,
     ascii_include_h: bool = config.ASCII_INCLUDE_H,
     ascii_neighbor_shells: int = config.ASCII_NEIGHBOR_SHELLS,
+    # Trajectory frame count (QM output files only; ignored for XYZ input)
+    n_frames: int = config.DEFAULT_N_FRAMES,
     # Output options
     save_trajectory: bool = config.SAVE_TRAJECTORY_DEFAULT,
     save_displacement: bool = config.SAVE_DISPLACEMENT_DEFAULT,
@@ -191,6 +195,7 @@ def run_vib_analysis(
         ascii_include_h: Include hydrogens in ASCII rendering
         ascii_neighbor_shells: Neighbor shells around transformation core
 
+        n_frames: Number of frames in the generated trajectory (QM output only; default 20)
         save_trajectory: Save converted trajectory to disk
         save_displacement: Save displaced structure pair
         displacement_scale: Displacement amplitude level (1-4)
@@ -243,6 +248,7 @@ def run_vib_analysis(
     trajectory_data = load_trajectory(
         input_file,
         mode=mode,
+        n_frames=n_frames,
         save_to_disk=save_trajectory,
         print_output=False,
     )

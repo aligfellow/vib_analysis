@@ -139,6 +139,12 @@ def main():
 
     # Output options
     output_group = parser.add_argument_group("output options")
+    output_group.add_argument(
+        "--vib-frames",
+        type=int,
+        default=config.DEFAULT_N_FRAMES,
+        help=f"Number of frames in the generated trajectory (QM output only; default: {config.DEFAULT_N_FRAMES})",
+    )
     output_group.add_argument("--save-displacement", "-sd", action="store_true", help="Save displaced structure pair")
     output_group.add_argument(
         "--displacement-scale",
@@ -224,6 +230,7 @@ def main():
             ascii_include_h=args.show_h,
             ascii_neighbor_shells=args.ascii_shells,
             # Output options
+            n_frames=args.vib_frames,
             save_trajectory=not args.no_save,
             save_displacement=args.save_displacement,
             displacement_scale=args.displacement_scale,
