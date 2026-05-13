@@ -61,23 +61,11 @@ def test_make_amplitudes_shape_and_range(n):
     assert np.isclose(a.max(), 1.0)
 
 
-@pytest.mark.parametrize("n", [-5, -1, 0, 1, 2, 3])
+@pytest.mark.parametrize("n", [-5, -1, 0, 1, 2, 3, 5, 6, 7, 9, 10])
 def test_make_amplitudes_invalid(n):
-    """n_frames below 4 raises ValueError."""
-    with pytest.raises(ValueError, match="at least 4"):
+    """n_frames that are not a positive multiple of 4 raise ValueError."""
+    with pytest.raises(ValueError, match="multiple of 4"):
         _make_amplitudes(n)
-
-
-@pytest.mark.parametrize("n", [9, 11])
-def test_make_amplitudes_odd_rounds_up(n):
-    """Odd n_frames is rounded up to even with a warning."""
-    with pytest.warns(UserWarning, match=str(n)):
-        a = _make_amplitudes(n)
-    assert len(a) == n + 1
-    assert np.isclose(a[0], 0.0)
-    assert np.isclose(a[(n + 1) // 2], 0.0)
-    assert np.isclose(a.min(), -1.0)
-    assert np.isclose(a.max(), 1.0)
 
 
 def test_load_trajectory_xyz_ignores_n_frames():
