@@ -52,10 +52,30 @@ def test_make_amplitudes_default():
 
 @pytest.mark.parametrize("n", [8, 20, 40, 100])
 def test_make_amplitudes_shape_and_range(n):
-    """Amplitudes cover [-1, 1], start at 0, and have the right length."""
+    """Amplitudes cover [-1, 1], start and midpoint at 0, and have the right length."""
     a = _make_amplitudes(n)
     assert len(a) == n
     assert np.isclose(a[0], 0.0)
+    assert np.isclose(a[n // 2], 0.0)
+    assert np.isclose(a.min(), -1.0)
+    assert np.isclose(a.max(), 1.0)
+
+
+@pytest.mark.parametrize("n", [-5, -1, 0, 1, 2, 3])
+def test_make_amplitudes_invalid(n):
+    """n_frames below 4 raises ValueError."""
+    with pytest.raises(ValueError, match="at least 4"):
+        _make_amplitudes(n)
+
+
+@pytest.mark.parametrize("n", [9, 11])
+def test_make_amplitudes_odd_rounds_up(n):
+    """Odd n_frames is rounded up to even with a warning."""
+    with pytest.warns(UserWarning, match=str(n)):
+        a = _make_amplitudes(n)
+    assert len(a) == n + 1
+    assert np.isclose(a[0], 0.0)
+    assert np.isclose(a[(n + 1) // 2], 0.0)
     assert np.isclose(a.min(), -1.0)
     assert np.isclose(a.max(), 1.0)
 

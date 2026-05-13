@@ -5,6 +5,7 @@ Handles ORCA and cclib-compatible formats.
 """
 
 import logging
+import warnings
 from typing import Any, Dict, List
 
 import cclib
@@ -20,11 +21,25 @@ def _make_amplitudes(n_frames: int) -> np.ndarray:
     """Generate *n_frames* amplitude samples covering one full oscillation cycle.
 
     The cycle runs 0 → -1 → 0 → +1 → (wraps back to 0), sampled as a
-    triangle wave so amplitude steps are evenly spaced.  For the default of
-    20 frames this exactly reproduces the original hardcoded sequence.
+    triangle wave.  The output is normalised so the extremes always reach
+    exactly ±1.0 regardless of whether n_frames is divisible by 4.
+    n_frames is rounded up to the nearest even number so the midpoint of
+    the sequence always lands on 0.0 (equilibrium).
     """
+    if n_frames < 4:
+        raise ValueError(f"n_frames must be at least 4, got {n_frames}.")
+    if n_frames % 2 != 0:
+        rounded = n_frames + 1
+        warnings.warn(
+            f"n_frames={n_frames} is odd and has been rounded to {rounded} to ensure the midpoint is 0.0 (equilibrium).",
+            UserWarning,
+            stacklevel=2,
+        )
+        n_frames = rounded
     t = np.linspace(0, 1, n_frames, endpoint=False)
-    return np.where(t < 0.25, -4 * t, np.where(t < 0.75, 4 * t - 2, 4 - 4 * t))
+    raw = np.where(t < 0.25, -4 * t, np.where(t < 0.75, 4 * t - 2, 4 - 4 * t))
+    peak = np.abs(raw).max()
+    return raw / peak if peak > 0 else raw
 
 
 def is_orca_output(filepath: str) -> bool:
