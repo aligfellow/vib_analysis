@@ -23,7 +23,13 @@ except (ImportError, AttributeError):
 
 from . import config
 from .characterize import characterize_vib_mode
-from .convert import is_orca_output, parse_cclib_output, parse_orca_output, parse_xyz_string_to_frames
+from .convert import (
+    is_orca_output,
+    parse_cclib_output,
+    parse_orca_output,
+    parse_xyz_string_to_frames,
+    validate_n_frames,
+)
 from .core import analyze_internal_displacements, read_xyz_trajectory
 from .graph_compare import analyze_displacement_graphs
 from .utils import save_displacement_pair, setup_logging, write_trajectory_file
@@ -73,7 +79,9 @@ def load_trajectory(
     Args:
         input_file: Path to XYZ trajectory or QM output file
         mode: Vibrational mode index (ignored for XYZ files)
-        n_frames: Number of frames in the generated trajectory (QM output only; default 20)
+        n_frames: Frames in the generated trajectory; must be a positive multiple
+            of 4. Only affects QM output — XYZ frame count is read from the file
+            (default 20)
         save_to_disk: Whether to save converted trajectory to disk
         print_output: Print status messages
 
@@ -84,6 +92,10 @@ def load_trajectory(
             - 'frequencies': List of frequencies (None for XYZ input)
             - 'trajectory_file': Path to trajectory file (None if not saved)
     """
+    # Validate up front so a bad value fails fast with a clear message, before any
+    # file IO. n_frames only affects QM output, but is always checked for sanity.
+    validate_n_frames(n_frames)
+
     basename = os.path.basename(input_file)
     root, ext = os.path.splitext(input_file)
 
@@ -195,7 +207,9 @@ def run_vib_analysis(
         ascii_include_h: Include hydrogens in ASCII rendering
         ascii_neighbor_shells: Neighbor shells around transformation core
 
-        n_frames: Number of frames in the generated trajectory (QM output only; default 20)
+        n_frames: Frames in the generated trajectory; must be a positive multiple
+            of 4. Only affects QM output — XYZ frame count is read from the file
+            (default 20)
         save_trajectory: Save converted trajectory to disk
         save_displacement: Save displaced structure pair
         displacement_scale: Displacement amplitude level (1-4)
@@ -212,6 +226,9 @@ def run_vib_analysis(
             - 'graph': Graph analysis results (if enabled)
             - 'displacement_files': Paths to saved displacement files (if enabled)
     """
+    # Fail fast on an invalid frame count before printing anything or doing work.
+    validate_n_frames(n_frames)
+
     if print_output or debug:
         print("=" * 80)
         print(" " * 32 + "GRAPHRC")

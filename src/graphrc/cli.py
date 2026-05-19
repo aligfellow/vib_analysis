@@ -6,6 +6,7 @@ import sys
 
 from . import __citation__, __version__, config
 from .api import run_vib_analysis
+from .convert import validate_n_frames
 
 
 def main():
@@ -143,7 +144,8 @@ def main():
         "--vib-frames",
         type=int,
         default=config.DEFAULT_N_FRAMES,
-        help=f"Number of frames in the generated trajectory (QM output only; default: {config.DEFAULT_N_FRAMES})",
+        help=f"Number of frames in the generated trajectory; must be a positive multiple of 4 "
+        f"(invalid values fall back to the default; QM output only; default: {config.DEFAULT_N_FRAMES})",
     )
     output_group.add_argument("--save-displacement", "-sd", action="store_true", help="Save displaced structure pair")
     output_group.add_argument(
@@ -197,6 +199,18 @@ def main():
                 file=sys.stderr,
             )
             sys.exit(1)
+
+    # Validate --vib-frames; fall back to the default if it is not a positive
+    # multiple of 4. The API enforces this strictly; the CLI is forgiving.
+    try:
+        validate_n_frames(args.vib_frames)
+    except ValueError:
+        print(
+            f"Warning: --vib-frames must be a positive multiple of 4; "
+            f"using default ({config.DEFAULT_N_FRAMES}) instead of {args.vib_frames}.",
+            file=sys.stderr,
+        )
+        args.vib_frames = config.DEFAULT_N_FRAMES
 
     # Auto-enable -ig if -igf is used
     if args.ig_flexible and not args.independent_graphs:

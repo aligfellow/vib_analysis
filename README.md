@@ -443,11 +443,12 @@ graphrc <input_file> [options]
 > graphrc -h
 
 usage: graphrc [-h] [--version] [--cite] [--mode MODE] [--ts-frame TS_FRAME] [--frame-selection {rmsd,bookend}] [--relaxed] [--bond-tolerance BOND_TOLERANCE]
-               [--bond-threshold BOND_THRESHOLD] [--angle-threshold ANGLE_THRESHOLD] [--dihedral-threshold DIHEDRAL_THRESHOLD] [--coupled-motion-filter COUPLED_MOTION_FILTER]
-               [--coupled-proton-threshold COUPLED_PROTON_THRESHOLD] [--all] [--graph] [--method {cheminf,xtb}] [--charge CHARGE] [--multiplicity MULTIPLICITY]
-               [--distance-tolerance DISTANCE_TOLERANCE] [--independent-graphs] [--ig-flexible] [--ascii-scale ASCII_SCALE] [--show-h] [--ascii-shells ASCII_SHELLS]
-               [--save-displacement] [--displacement-scale DISPLACEMENT_SCALE] [--no-save] [--orca-path ORCA_PATH] [--debug]
-               [input]
+              [--bond-threshold BOND_THRESHOLD] [--angle-threshold ANGLE_THRESHOLD] [--dihedral-threshold DIHEDRAL_THRESHOLD]
+              [--coupled-motion-filter COUPLED_MOTION_FILTER] [--coupled-proton-threshold COUPLED_PROTON_THRESHOLD] [--all] [--graph] [--method {cheminf,xtb}]
+              [--charge CHARGE] [--multiplicity MULTIPLICITY] [--distance-tolerance DISTANCE_TOLERANCE] [--independent-graphs] [--ig-flexible]
+              [--ascii-scale ASCII_SCALE] [--show-h] [--ascii-shells ASCII_SHELLS] [--vib-frames VIB_FRAMES] [--save-displacement]
+              [--displacement-scale DISPLACEMENT_SCALE] [--no-save] [--debug]
+              [input]
 
 Internal Coordinate Analysis of Vibrational Modes.
 
@@ -490,10 +491,10 @@ graph analysis parameters:
   --distance-tolerance DISTANCE_TOLERANCE
                         Tolerance for bond formation/breaking (default: 0.2 Å)
   --independent-graphs, -ig
-                        Build molecular graphs from the displaced geometries rather than TS geometry with guided bonding (more rigorous for use
-                        with IRC or QRC displaced trajectories)
-  --ig-flexible, -igf   Apply bond-tolerance to displaced graphs (with -ig). Default: displaced graphs use stricter xyzgraph defaults for more
-                        rigorous connectivity detection
+                        Build molecular graphs from the displaced geometries rather than TS geometry with guided bonding (more rigorous for use with IRC or
+                        QRC displaced trajectories)
+  --ig-flexible, -igf   Apply bond-tolerance to displaced graphs (with -ig). Default: displaced graphs use stricter xyzgraph defaults for more rigorous
+                        connectivity detection
 
 ASCII rendering options:
   --ascii-scale ASCII_SCALE, -as ASCII_SCALE
@@ -503,11 +504,14 @@ ASCII rendering options:
                         Neighbor shells around transformation core (default: 1)
 
 output options:
+  --vib-frames VIB_FRAMES
+                        Number of frames in the generated trajectory; must be a positive multiple of 4 (invalid values fall back to the default; QM output
+                        only; default: 20)
   --save-displacement, -sd
                         Save displaced structure pair
   --displacement-scale DISPLACEMENT_SCALE, -ds DISPLACEMENT_SCALE
-                        Displacement scale for saved displaced structures (1-4 uses trajectory frames directly, ~0.2-0.8
-                        amplitude; >4 extrapolates beyond the trajectory using the normal mode vector) (default: 1)
+                        Displacement scale for saved displaced structures (1-4 uses trajectory frames directly, ~0.2-0.8 amplitude; >4 extrapolates beyond the
+                        trajectory) (default: 1)
   --no-save             Do not save trajectory to disk (keep in memory only)
 ```
 
@@ -589,6 +593,9 @@ graphrc input.xyz -sd -ds 2
 
 # Don't save trajectory to disk
 graphrc input.xyz --no-save
+
+# Set the trajectory frame count for QM output (must be a positive multiple of 4)
+graphrc calculation.out --vib-frames 40
 ```
 
 ### Complete Example

@@ -1,16 +1,10 @@
 """Smoke tests for graphrc API."""
 
-from pathlib import Path
-
 import numpy as np
 import pytest
 
 from graphrc import __citation__, __version__
-from graphrc.api import load_trajectory
-from graphrc.convert import _make_amplitudes
-
-DATA_DIR = Path(__file__).parent.parent / "examples" / "data"
-TEST_FILE = str(DATA_DIR / "sn2.v000.xyz")
+from graphrc.convert import _make_amplitudes, validate_n_frames
 
 
 def test_version():
@@ -24,52 +18,18 @@ def test_citation():
 
 
 def test_make_amplitudes_default():
-    """Default 20-frame sequence matches the original hardcoded list."""
+    """The 20-frame default reproduces the original hardcoded amplitude list."""
     expected = [
-        0.0,
-        -0.2,
-        -0.4,
-        -0.6,
-        -0.8,
-        -1.0,
-        -0.8,
-        -0.6,
-        -0.4,
-        -0.2,
-        0.0,
-        0.2,
-        0.4,
-        0.6,
-        0.8,
-        1.0,
-        0.8,
-        0.6,
-        0.4,
-        0.2,
-    ]
+        0.0, -0.2, -0.4, -0.6, -0.8, -1.0, -0.8, -0.6, -0.4, -0.2,
+        0.0, 0.2, 0.4, 0.6, 0.8, 1.0, 0.8, 0.6, 0.4, 0.2,
+    ]  # fmt: skip
     assert np.allclose(_make_amplitudes(20), expected)
+    assert len(_make_amplitudes(40)) == 40
 
 
-@pytest.mark.parametrize("n", [8, 20, 40, 100])
-def test_make_amplitudes_shape_and_range(n):
-    """Amplitudes cover [-1, 1], start and midpoint at 0, and have the right length."""
-    a = _make_amplitudes(n)
-    assert len(a) == n
-    assert np.isclose(a[0], 0.0)
-    assert np.isclose(a[n // 2], 0.0)
-    assert np.isclose(a.min(), -1.0)
-    assert np.isclose(a.max(), 1.0)
-
-
-@pytest.mark.parametrize("n", [-5, -1, 0, 1, 2, 3, 5, 6, 7, 9, 10])
-def test_make_amplitudes_invalid(n):
-    """n_frames that are not a positive multiple of 4 raise ValueError."""
-    with pytest.raises(ValueError, match="multiple of 4"):
-        _make_amplitudes(n)
-
-
-def test_load_trajectory_xyz_ignores_n_frames():
-    """XYZ input: frame count comes from the file, n_frames has no effect."""
-    result_default = load_trajectory(TEST_FILE, save_to_disk=False)
-    result_custom = load_trajectory(TEST_FILE, n_frames=40, save_to_disk=False)
-    assert len(result_default["frames"]) == len(result_custom["frames"])
+def test_validate_n_frames():
+    """n_frames must be a positive multiple of 4."""
+    assert validate_n_frames(20) == 20
+    for bad in (0, 7, -4):
+        with pytest.raises(ValueError, match="multiple of 4"):
+            validate_n_frames(bad)

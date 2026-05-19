@@ -16,6 +16,17 @@ from . import config
 logger = logging.getLogger("graphrc")
 
 
+def validate_n_frames(n_frames: int) -> int:
+    """Return *n_frames* unchanged if it is a positive multiple of 4, else raise ValueError.
+
+    The trajectory amplitudes form a triangle wave; a multiple of 4 ensures the
+    extremes land exactly on ±1.0 and the midpoint lands exactly on 0.0.
+    """
+    if n_frames < 4 or n_frames % 4 != 0:
+        raise ValueError(f"n_frames must be a positive multiple of 4, got {n_frames}.")
+    return n_frames
+
+
 def _make_amplitudes(n_frames: int) -> np.ndarray:
     """Generate *n_frames* amplitude samples covering one full oscillation cycle.
 
@@ -23,8 +34,7 @@ def _make_amplitudes(n_frames: int) -> np.ndarray:
     triangle wave.  n_frames must be a multiple of 4 so that the extremes
     land exactly on ±1.0 and the midpoint lands exactly on 0.0.
     """
-    if n_frames < 4 or n_frames % 4 != 0:
-        raise ValueError(f"n_frames must be a positive multiple of 4, got {n_frames}.")
+    validate_n_frames(n_frames)
     t = np.linspace(0, 1, n_frames, endpoint=False)
     return np.where(t < 0.25, -4 * t, np.where(t < 0.75, 4 * t - 2, 4 - 4 * t))
 
