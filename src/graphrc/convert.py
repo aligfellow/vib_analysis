@@ -11,7 +11,32 @@ import cclib
 import numpy as np
 from xyzgraph import DATA
 
+from . import config
+
 logger = logging.getLogger("graphrc")
+
+
+def validate_n_frames(n_frames: int) -> int:
+    """Return *n_frames* unchanged if it is a positive multiple of 4, else raise ValueError.
+
+    The trajectory amplitudes form a triangle wave; a multiple of 4 ensures the
+    extremes land exactly on ±1.0 and the midpoint lands exactly on 0.0.
+    """
+    if n_frames < 4 or n_frames % 4 != 0:
+        raise ValueError(f"n_frames must be a positive multiple of 4, got {n_frames}.")
+    return n_frames
+
+
+def _make_amplitudes(n_frames: int) -> np.ndarray:
+    """Generate *n_frames* amplitude samples covering one full oscillation cycle.
+
+    The cycle runs 0 → -1 → 0 → +1 → (wraps back to 0), sampled as a
+    triangle wave.  n_frames must be a multiple of 4 so that the extremes
+    land exactly on ±1.0 and the midpoint lands exactly on 0.0.
+    """
+    validate_n_frames(n_frames)
+    t = np.linspace(0, 1, n_frames, endpoint=False)
+    return np.where(t < 0.25, -4 * t, np.where(t < 0.75, 4 * t - 2, 4 - 4 * t))
 
 
 def is_orca_output(filepath: str) -> bool:
@@ -26,35 +51,14 @@ def is_orca_output(filepath: str) -> bool:
     return False
 
 
-def parse_cclib_output(output_file, mode):
+def parse_cclib_output(output_file, mode, n_frames: int = config.DEFAULT_N_FRAMES):
     """
     Parse QM output with cclib and generate trajectory.
 
     Returns: (frequencies, trajectory_xyz_string).
     """
     mode = int(mode)
-    amplitudes = [
-        0.0,
-        -0.2,
-        -0.4,
-        -0.6,
-        -0.8,
-        -1.0,
-        -0.8,
-        -0.6,
-        -0.4,
-        -0.2,
-        0.0,
-        0.2,
-        0.4,
-        0.6,
-        0.8,
-        1.0,
-        0.8,
-        0.6,
-        0.4,
-        0.2,
-    ]
+    amplitudes = _make_amplitudes(n_frames)
 
     try:
         parser = cclib.io.ccopen(output_file)
@@ -90,7 +94,7 @@ def parse_cclib_output(output_file, mode):
     return freqs, trj_data, displacement
 
 
-def parse_orca_output(orca_file: str, mode: int):
+def parse_orca_output(orca_file: str, mode: int, n_frames: int = config.DEFAULT_N_FRAMES):
     """
     Parse ORCA output file directly for normal modes.
 
@@ -105,28 +109,7 @@ def parse_orca_output(orca_file: str, mode: int):
     Returns: (frequencies, trajectory_xyz_string).
     """
     mode = int(mode)
-    amplitudes = [
-        0.0,
-        -0.2,
-        -0.4,
-        -0.6,
-        -0.8,
-        -1.0,
-        -0.8,
-        -0.6,
-        -0.4,
-        -0.2,
-        0.0,
-        0.2,
-        0.4,
-        0.6,
-        0.8,
-        1.0,
-        0.8,
-        0.6,
-        0.4,
-        0.2,
-    ]
+    amplitudes = _make_amplitudes(n_frames)
 
     with open(orca_file) as f:
         lines = f.readlines()
